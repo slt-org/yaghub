@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+  <h2>Custom Calculation</h2>
+  <label for="volume"> Volume </label>
+  <input type="number" id="volume" name="volume" min="0" max="100"/><br><br>
+  <span>  </span>
+  <input id="submitBtn" type="submit" value="Submit" onclick="sendData()"/><br><br>
+
+  <div id="result">
+    <em> Batch Recipe </em>
+  </div>
+  <script>
+    /**
+     * Send disk inputs to Google Apps Script and returns a calculated
+     * value back to display on page.
+     */
+    function sendData() {
+      //Get inputted number and result div
+      let _volume = document.querySelector('#volume').value;
+      var dataToSend = createData(_volume);
+
+      let updateLocation = document.querySelector('#result');
+
+      function onSuccess(returnedValue) {
+        console.log(returnedValue);
+        updateLocation.innerHTML = returnedValue;
+      }
+
+      /** First tests if GAS code is successful,
+       * attempts to run GAS-side function.
+       * on failure sends to onFailure function with nature of error.
+       * on success sends to onSuccess function with returned result.
+       */
+      google.script.run.withSuccessHandler(onSuccess).getAnyVolumeRecipeFromWebAPP(dataToSend);
+
+    };
+
+    /**
+     * this method takes the text input values and turns
+     * them into json
+     */
+    function createData(_volume){
+      console.log("in createData");
+      var data = new Object();
+      data.volume = _volume;
+      var string = JSON.stringify(data);
+      return string;
+    };
+  </script>
+
+
+  </body>
+</html>
+
