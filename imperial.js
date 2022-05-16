@@ -123,12 +123,14 @@ function convert(ingredientWeightInGrams, ingredientConversionFactor) {
   var conObj = new Object();
   conObj.cups = 0;         // 48 tsps
   conObj.threeqtrCup = 0;  // 36 tsps
+  // conObj.twoThirdsCup = 0; // 32 tsps
   conObj.halfCup = 0;      // 24 tsps
   conObj.qtrCup = 0;       // 12 tsps
   conObj.tblsp = 0;        //  3 tsps
   conObj.threeqtrTsp = 0;  
   conObj.halfTsp = 0;
   conObj.qtrTsp = 0;
+  conObj.eightTsp = 0;
   conObj.tsp = 0;
 
   while (tsp > 48) {
@@ -174,8 +176,13 @@ function convert(ingredientWeightInGrams, ingredientConversionFactor) {
     tsp = 0;
   }
 
-  if (tsp < .499 && tsp >= .15) {
+  if (tsp < .499 && tsp >= .25) {
     conObj.qtrTsp = conObj.qtrTsp + 1;
+    tsp = 0;
+  }
+
+  if (tsp < .249 && tsp >= .125) {
+    conObj.eightTsp = conObj.eightTsp + 1;
     tsp = 0;
   }
    return conObj;

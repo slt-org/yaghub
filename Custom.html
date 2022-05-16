@@ -6,8 +6,15 @@
   <body>
   <h2>Custom Calculation</h2>
   <label for="volume"> Volume </label>
-  <input type="number" id="volume" name="volume" min="0" max="100"/><br><br>
-  <span>  </span>
+  <input type="number" id="volume" name="volume" min="15" max="1000" step="0.1" required/>  cubic centimeters<br><br>
+    <p><b>Please select your preferred units of measure for recipe output :</b></p>
+  <div>
+    <label for="units">Output units: </label>
+    <input type="radio" name="units" value="metric" checked>Metric
+    <input type="radio" name="units" value="imperial">Imperial
+  </div>
+<br>
+
   <input id="submitBtn" type="submit" value="Submit" onclick="sendData()"/><br><br>
 
   <div id="result">
@@ -21,7 +28,14 @@
     function sendData() {
       //Get inputted number and result div
       let _volume = document.querySelector('#volume').value;
-      var dataToSend = createData(_volume);
+      let _units  = document.querySelector('input[name=units]:checked').value; 
+      console.log("units input: "+_units);
+      console.log("volume input: "+_volume);
+             
+      var valid = validateInputs(_volume);
+      if(!valid){  return; };
+
+      var dataToSend = createData(_volume,_units);
 
       let updateLocation = document.querySelector('#result');
 
@@ -30,12 +44,7 @@
         updateLocation.innerHTML = returnedValue;
       }
 
-      /** First tests if GAS code is successful,
-       * attempts to run GAS-side function.
-       * on failure sends to onFailure function with nature of error.
-       * on success sends to onSuccess function with returned result.
-       */
-      google.script.run.withSuccessHandler(onSuccess).getAnyVolumeRecipeFromWebAPP(dataToSend);
+      google.script.run.withSuccessHandler(onSuccess).mGetCustomRecipeFromWebAPP(dataToSend);
 
     };
 
@@ -43,13 +52,28 @@
      * this method takes the text input values and turns
      * them into json
      */
-    function createData(_volume){
+    function createData(_volume,_units){
       console.log("in createData");
       var data = new Object();
       data.volume = _volume;
+      data.units  = _units;
       var string = JSON.stringify(data);
       return string;
     };
+
+    function validateInputs(_volume){
+      var valid = true;
+        if(_volume < 10 || _volume > 1000 ){
+        console.log("bad value for volume "+_volume);
+        document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR volume should be greater than the minimum value of 10 cubic centimeters</h4>" 
+                                                       +"<h4 style='color:red'> or less than the upper limit of 1000 cubic centimeters</h4>";
+        valid = false;
+      }
+
+      return valid;
+    };
+
+
   </script>
 
 

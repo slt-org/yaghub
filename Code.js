@@ -23,7 +23,7 @@ function doGet(e) {
    return HtmlService.createHtmlOutputFromFile('Slab').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   } 
   else if (e.parameter.pageName == "Custom") {
-        Logger.log("    in Any calc")
+        Logger.log("    in Custom")
    return HtmlService.createHtmlOutputFromFile('Custom').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   } 
   else {
