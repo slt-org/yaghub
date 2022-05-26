@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <style>
+    body {
+      font: 15px Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+<h2>Reverse Calculation</h2>
+
+<label for="weight"> Weight </label>
+<input type="number" id="weight" name="weight"  min="0.1" max="100" step=".1" required/>  grams<br><br>
+<p><b>Please select your preferred units of measure for recipe output :</b></p>
+<div>
+  <label for="outputUnits">Output units: </label>
+  <input type="radio" name="outputUnits" value="metric" checked>Metric
+  <input type="radio" name="outputUnits" value="imperial">Imperial
+</div>
+<br>
+<input id="submitBtn" type="submit" value="Submit" onclick="sendData()"/><br><br>
+<br>
+<div id="result">
+  <em> Dimemsions: </em>
+</div>
+<script>
+  /**
+   * Send disk inputs to Google Apps Script and returns a calculated
+   * value back to display on page.
+   */
+  function sendData() {
+    //Get inputted number and result div
+    let _weight = document.querySelector('#weight').value;
+    let _outputUnits  = document.querySelector('input[name=outputUnits]:checked').value;
+    console.log("weight input: "+_weight);
+    console.log("units input: "+_outputUnits);
+
+    var valid = validateInputs(_weight);
+    if(!valid){  return; };
+
+    /**
+     *  calculate
+      well chosen height of 1 then dimensions become simply the square root of the volume.
+     disk  56/2 = 28 cm^3		disk dimensions pi * r * r * 1 = 28 cm^3.
+     r*r = 28/pi*1
+     r = sqrt(28/(pi*1))
+     r = 3 cm
+     **************
+     * slab
+     **/
+    // weight / 2 = volume.
+    var volume = _weight/2;
+    volume = volume.toFixed(1);
+    var radius = Math.sqrt(volume/(3.1416*1));
+    radius = radius.toFixed(1);
+    var dimension = Math.sqrt(volume).toFixed(1);
+
+    let updateLocation = document.querySelector('#result');
+
+    console.log("in the new reverse calculator..")
+    updateLocation.innerHTML = "<em> Volume: "+volume+"cm^3</em><br><em> Disk dimensions: </em> radius: "+radius+ "cm, height: 1cm <br> " +
+            "<em> Slab dimensions: </em> length: "+dimension+"cm, width: "+dimension+"cm, height: 1cm ";
+
+  };
+
+  function validateInputs(_weight){
+    var valid = true;
+    if(_weight < 10 || _weight > 500 ){
+      console.log("bad value for weight "+_weight);
+      document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR weight should be greater than the minimum value of 10 grams</h4>"
+              +"<h4 style='color:red'> or less than the upper limit of 500 grams</h4>";
+      valid = false;
+    }
+    return valid;
+  };
+
+</script>
+
+
+</body>
+
+</html>
