@@ -8,6 +8,7 @@
   * @return {string} as html for MG batch recipe.
   */
 function mGetDiskRecipeFromWebAPP(element) {
+  var inputUnits = "metric";
   console.log("in mGetDiskRecipeFromWebAPP:*******************");
   console.log(element);
   //Just a quick proof that the returned number value will be a text. Remove on production.
@@ -22,15 +23,16 @@ function mGetDiskRecipeFromWebAPP(element) {
 
   // Turn json text into json object
   var parsed_obj = JSON.parse(element);
-  console.log("json object parsed from serverside: radius=" + parsed_obj.radius + " height=" + parsed_obj.height+" units="+parsed_obj.units);
+  console.log("json object parsed from serverside: radius=" + parsed_obj.radius + " height=" 
+               + parsed_obj.height+" inputUnits="+parsed_obj.inputUnits+" outputUnits="+parsed_obj.outputUnits);
 
-  var volumeObject = diskCalcMetric(parsed_obj.radius, parsed_obj.height, parsed_obj.units);
+  var volumeObject = diskCalcMetric(parsed_obj.radius, parsed_obj.height, inputUnits, parsed_obj.outputUnits);
   var resultHtml;
 
-  if (volumeObject.units == "metric") {
+  if (volumeObject.outputUnits == "metric") {
     // produce the metric version of recipe
     resultHtml = mCreateRecipeTableHtml(volumeObject);
-  } else if (volumeObject.units == "imperial") {
+  } else if (volumeObject.outputUnits == "imperial") {
     // produce the imperial version of recipe
     // need to take the volumeObject down the Imperial path.
     resultHtml = iCreateRecipeTableHtml(volumeObject);
@@ -50,17 +52,18 @@ function mGetDiskRecipeFromWebAPP(element) {
  * centimeter inputs, generating a volume in cubic centimeters.
  *  
  */
-function diskCalcMetric(radius, height, units) {
+function diskCalcMetric(radius, height, inputUnits, outputUnits) {
   console.log("in diskCalcMetric:*******************");
-  console.log("value parameters on call radius=" + radius + " height=" + height+ " units=" + units);
+  console.log("value parameters on call radius=" + radius + " height=" + height+" inputUnits="+inputUnits+" outputUnits="+outputUnits);
   var volumeObject = new Object();
   volumeObject.volume = PI * radius * radius * height;
   volumeObject.radius = radius;
   volumeObject.height = height;
-  volumeObject.units=units;
+  volumeObject.inputUnits=inputUnits;
+  volumeObject.outputUnits=outputUnits;
 
-  console.log("raw volume in cm^3= " + volumeObject.volume);
-  console.log("in diskCalcMetric:*******************");
+  console.log("raw volume = " + volumeObject.volume);
+  console.log("out diskCalcMetric:*******************");
 
   return volumeObject
 

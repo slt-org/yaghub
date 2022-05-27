@@ -51,17 +51,6 @@
     console.log("volumeObject: "+JSON.stringify(volumeObject));
     let updateLocation = document.querySelector('#result');
 
-    // serverside responses
-    function onFailure(returnedValue) {
-      console.log(returnedValue);
-      updateLocation.innerHTML = returnedValue;
-    }
-
-    function onSuccess(returnedValue) {
-      console.log(returnedValue);
-      updateLocation.innerHTML = returnedValue;
-    }
-
     console.log("in the new disk volume calculator..")
     // google.script.run.withFailureHandler(onFailure).withSuccessHandler(onSuccess).mGetDiskRecipeFromWebAPP(dataToSend);
     updateLocation.innerHTML = "<em> Volume of disk: </em> "+volumeObject.volume + " cm<sup>3</sup>";

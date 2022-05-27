@@ -14,9 +14,9 @@ function doGet(e) {
   // Route the request to a function call for each MG-calc
   // There must be a pageName parameter or we Error out.
 
-  if (e.parameter.pageName == "Disk") {
-    Logger.log("    in Disk calc")
-    return HtmlService.createHtmlOutputFromFile('Disk').setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  if (e.parameter.pageName == "mDisk") {
+    Logger.log("    in mDisk calc")
+    return HtmlService.createHtmlOutputFromFile('mDisk').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   }  
   else if (e.parameter.pageName == "Slab") {
         Logger.log("    in Cuboid calc")
