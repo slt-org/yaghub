@@ -19,7 +19,10 @@ function testCuboid_mGetCuboidRecipeFromWebAPP() {
 function testDisk_mGetDiskRecipeFromWebAPP() {
   //var testrun = mGetDiskRecipeFromWebAPP('{"radius":"10","height":".3","inputUnits":"metric",//"outputUnits":"metric"}');
   //console.log(" Test getDiskRecipeFromWebAPP metric run :"+JSON.stringify(testrun)); 
-  var testrun = mGetDiskRecipeFromWebAPP('{"radius":"10","height":".3","inputUnits":"metric","outputUnits":"imperial"}');
+  //var testrun = mGetDiskRecipeFromWebAPP('{"radius":"10","height":".3","inputUnits":"metric","outputUnits":"imperial"}');
+  //console.log(" Test getDiskRecipeFromWebAPP imperial run :" + JSON.stringify(testrun));
+  // should be equivalent to "4 3/8"(4.375) inches radius and 1/4(.25) inch high. 
+  var testrun = mGetDiskRecipeFromWebAPP('{"radius":"11.1125","height":".635","inputUnits":"metric","outputUnits":"imperial"}');
   console.log(" Test getDiskRecipeFromWebAPP imperial run :" + JSON.stringify(testrun));
 };
 

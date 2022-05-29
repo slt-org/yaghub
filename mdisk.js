@@ -9,7 +9,7 @@
   */
 function mGetDiskRecipeFromWebAPP(element) {
   var inputUnits = "metric";
-  console.log("in mGetDiskRecipeFromWebAPP:*******************");
+  console.log("in  mdisk.gs:mGetDiskRecipeFromWebAPP:*******************");
   console.log(element);
   //Just a quick proof that the returned number value will be a text. Remove on production.
   console.log(`Returned json is: ${element}`, typeof element);
@@ -41,7 +41,7 @@ function mGetDiskRecipeFromWebAPP(element) {
     resultHtml = "<h3>Failed to create recipe...  ERROR</h3>";
   }
 
-  console.log("out getDiskRecipeFromWebAPP:*******************");
+  console.log("out  mdisk.gs:getDiskRecipeFromWebAPP:*******************");
   // Logger.log("mGetCuboidRecipeFromWebAPP: html from server to send back: " + resultHtml);
 
   return resultHtml;
@@ -53,7 +53,7 @@ function mGetDiskRecipeFromWebAPP(element) {
  *  
  */
 function diskCalcMetric(radius, height, inputUnits, outputUnits) {
-  console.log("in diskCalcMetric:*******************");
+  console.log("in mdisk.gs:diskCalcMetric:*******************");
   console.log("value parameters on call radius=" + radius + " height=" + height+" inputUnits="+inputUnits+" outputUnits="+outputUnits);
   var volumeObject = new Object();
   volumeObject.volume = PI * radius * radius * height;
@@ -63,7 +63,7 @@ function diskCalcMetric(radius, height, inputUnits, outputUnits) {
   volumeObject.outputUnits=outputUnits;
 
   console.log("raw volume = " + volumeObject.volume);
-  console.log("out diskCalcMetric:*******************");
+  console.log("out mdisk.gs:diskCalcMetric:*******************");
 
   return volumeObject
 

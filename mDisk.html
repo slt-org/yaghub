@@ -3,7 +3,7 @@
 
 <head>
   <base target="_top">
-    <style>
+  <style>
     body {
       font: 15px Arial, sans-serif;
     }
@@ -29,6 +29,11 @@
   <div id="result">
     <em> Batch Recipe </em>
   </div>
+  <br>
+  <div>
+    <em>ver 11.1</em>
+  </div>
+
   <script>
     /**
      * Send disk inputs to Google Apps Script and returns a calculated
@@ -72,17 +77,19 @@
      * them into json
      */
     function createData(_radius,_height,_outputUnits,_inputUnits){
-      console.log("in createData");
+      console.log("in mDisk.html:createData ***************************");
       var data = new Object();
       data.radius = _radius;
       data.height = _height;
       data.outputUnits = _outputUnits;
       data.inputUnits = _inputUnits;
       var string = JSON.stringify(data);
+      console.log("out mDisk.html:createData ***************************");
       return string;
     };
  
     function validateInputs(_radius,_height){
+      console.log("in mDisk.html:validateInputs ***************************");
       var valid = true;
         if(_radius < 1 || _radius > 100 ){
         console.log("bad value for radius "+_radius);
@@ -96,6 +103,7 @@
         document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR height < minimum value of .1 cm or > 100 cm</h4>";
         valid = false;
       }
+      console.log("out mDisk.html:validateInputs ***************************");
       
       return valid;
     };

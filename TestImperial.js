@@ -1,11 +1,16 @@
 
 //main web function called from client side with json values 
-function testDisk_mGetDiskRecipeFromWebAPP(){
-  console.log("Tests for mGetCuboidRecipeFromWebAPP");
-  //var testrun = mGetCuboidRecipeFromWebAPP('{"length":"15","width":"12","height":".3","units":"metric"}');
-  //console.log(" Good values :"+JSON.stringify(testrun));
-  testrun = mGetDiskRecipeFromWebAPP('{"radius":"10","height":".3","units":"imperial"}');
-  console.log(" With units set to imperial :"+JSON.stringify(testrun));
+function testDisk_iGetDiskRecipeFromWebAPP(){
+  console.log("Tests for iGetDiskRecipeFromWebAPP");
+  // can't call external library functions here so input must be string or number
+  // html inputs are radius "9 7/8" height "1/4" and are turned into numbers in the webpage scripts
+  //  because you can't load external libraries like "Math" in google apps script server code, only in
+  // html <script> tags. uuuugh!!! makes testing very hard in the Apps Script ide. I found a way possibly 
+  // see this reference  https://www.labnol.org/code/20380-load-external-javascript-with-eval some methods did not work. 
+  var testrun = iGetDiskRecipeFromWebAPP('{"radius":9.875,"height":0.25,"inputUnits":"imperial", "outputUnits":"imperial"}');
+  console.log(" Good values :"+JSON.stringify(testrun));
+  // testrun = iGetDiskRecipeFromWebAPP('{"radius":"9 1/2","height":"1/8","inputUnits":"imperial", "outputUnits":"imperial"}');
+  // console.log(" With units set to imperial :"+JSON.stringify(testrun));
 };
 
 
