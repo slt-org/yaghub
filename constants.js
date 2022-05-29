@@ -14,6 +14,8 @@ const aHALF = "1/2";
 const a1QTR = "1/4" 
 const TBSP  = "tbsp";
 const TSP   = "tsp";
+const IMPERIAL = "imperial";
+const METRIC = "metric";
 
 
 

@@ -15,9 +15,9 @@
   <h2>Disk Calculation</h2>
   <p>Inputs can be decimal or fractions</p>
   <label for="radius"> Radius </label>
-  <input type="text" id="radius" name="radius"  min="0.1" max="100" step=".1" required/>  inches<br><br>
+  <input type="text" id="radius" name="radius" min="0.1" max="100" step=".1" required/> inches<br><br>
   <label for="height"> Height </label>
-  <input type="text" id="height" name="height"  min="0.1" max="100"  step=".1" required/>  inches<br><br>
+  <input type="text" id="height" name="height" min="0.1" max="100" step=".1" required/> inches<br><br>
   <p><b>Please select your preferred units of measure for recipe output :</b></p>
   <div>
     <label for="outputUnits">Output units: </label>
@@ -25,124 +25,121 @@
     <input type="radio" name="outputUnits" value="imperial">Imperial
   </div>
   <br>
-  <input id="submitBtn" type="submit" value="Submit" onclick="generateRecipe()"/><br><br>
+  <input id="submitBtn" type="submit" value="Submit" onclick="sendData()"/><br><br>
   <br>
   <div id="result">
     <em> Batch Recipe </em>
   </div>
+  <br>
+  <div>
+    <em>ver 11.1</em>
+  </div>
   <script>
-    const inputUnits = "imperial";
     /**
      * Send disk inputs to Google Apps Script and returns a calculated
      * value back to display on page.
      */
-    function generateRecipe() {
-      const IMPERIAL = "imperial";
-
-      //Get inputted number and result div
+    function sendData() {
+      console.log("in iDisk.html:sendData ***************************");
+      const _inputUnits = "imperial";
+      
+      //Get input number and result div
       let _radius = document.querySelector('#radius').value;
       let _height = document.querySelector('#height').value;
-      let _outputUnits  = document.querySelector('input[name=outputUnits]:checked').value;
+      let _outputUnits  = document.querySelector('input[name=outputUnits]:checked').value; 
       console.log("radius input: "+_radius);
       console.log("height input: "+_height);
-      console.log("outputUnits  input: "+_outputUnits);
+      console.log("outputUnits input: "+_outputUnits);
        
+      // valid inputs can be whole numbers, decimals and fractions
       var valid = validateInputs(_radius,_height);
       if(!valid){  return; };
 
-      // inputs pass the validity test so turn them into numbers
-      //
-      var radius = math.fraction(_radius);
-      var height = math.fraction(_height);
-      console.log("radius: " +radius.toString());
-      console.log("height: " +height.toString());
-      console.log("radius number: " +Number(radius).toFixed(2));
+        // inputs pass the validity test so turn them into numbers
+        // all inputs are in inches so volume will be in inches
+        //
+        var radius = math.fraction(_radius);
+        var height = math.fraction(_height);
+        console.log("radius: " + radius.toString());
+        console.log("height: " + height.toString());
+        console.log("radius number: " + Number(radius));
+        console.log("height number: " + Number(height));
 
-      // using the numbers run the volume to weight transform
-      // the weight to batch recipe.
-      var volumeObject = diskCalc(radius,height,IMPERIAL,_outputUnits);
-
-      if (volumeObject.ouputUnits == "metric") {
-        // produce the metric version of recipe
-        resultHtml = mCreateRecipeTableHtml(volumeObject);
-      } else if (volumeObject.ouputUnits == "imperial") {
-        // produce the imperial version of recipe
-        // need to take the volumeObject down the Imperial path.
-        resultHtml = iCreateRecipeTableHtml(volumeObject);
-      } else {
-        Logger.log("We should never get here 'Big old Error'");
-        resultHtml = "<h3>Failed to create recipe...  ERROR</h3>";
-      }
+      // We've turned the fraction or decimal text input into numbers.
+      // the numbers are still in the imperial units number system.
+      // Convert them once on the server side.
+      var dataToSend = createData(Number(radius),Number(height),_outputUnits,_inputUnits);
 
       let updateLocation = document.querySelector('#result');
       
+      // serverside responses
+      function onFailure(returnedValue) {
+        console.log(returnedValue);
+        updateLocation.innerHTML = returnedValue;
+      }
 
-      // google.script.run.withFailureHandler(onFailure).withSuccessHandler(onSuccess).mGetDiskRecipeFromWebAPP(dataToSend);
-      updateLocation.innerHTML = "<em> Volume of disk: </em> "+ valid + " cm<sup>3</sup>";
+      function onSuccess(returnedValue) {
+        console.log(returnedValue);
+        updateLocation.innerHTML = returnedValue;
+      }
+
+      google.script.run.withFailureHandler(onFailure).withSuccessHandler(onSuccess).iGetDiskRecipeFromWebAPP(dataToSend);
+      console.log("out iDisk.html:sendData ***************************");
 
     };
 
     /**
-     * This function will calculate a disk volume based on
-     * inputs, generating a volume based in units of either
-     * imperial or metric.
-     *
+     * this method takes the text input values and turns
+     * them into json
      */
-    function diskCalc(radius, height, inputUnits, outputUnits) {
-      console.log("in diskCalc:*******************");
-      console.log("value parameters on call radius=" + radius + " height=" + height+ " outputUnits=" + outputUnits+ " inputUnits=" + inputUnits);
-      var volumeObject = new Object();
-      volumeObject.volume = PI * radius * radius * height;
-      volumeObject.radius = radius;
-      volumeObject.height = height;
-      volumeObject.inputUnits=inputUnits;
-      volumeObject.ouputUnits=outputUnits;
-
-      console.log("raw volume in "+inputUnits+" cubic units = " + volumeObject.volume);
-      console.log("in diskCalc:*******************");
-
-      return volumeObject
-
-    }
-
- 
-    function validateInputs(_radius,_height){
-      var valid = true;
-      // turn text input into numbers or kick it back
-      var re = /[-]?[0-9]+[,.]?[0-9]*([\/][0-9]+[,.]?[0-9]*)*/;
-      var radR = re.test(_radius);
-      var hitR = re.test(_height);
-      var radius;
-      var height;
-
-      if(!radR){
-        return false;
-        console.log("radius is not currectly formed");
-      }
-
-      if(!hitR){
-        return false;
-        console.log("heigth is not currectly formed");
-      }
-
-      if(_radius < 1 || _radius > 100 ){
-        console.log("bad value for radius "+_radius);
-        document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR radius should be greater than the minimum value of 1cm</h4>" 
-                                                       +"<h4 style='color:red'> or less than the upper limit of 100cm</h4>";
-        valid = false;
-      }
-
-      if(_height < .1 || _height > 100){
-        console.log("bad value for height "+_height);
-        document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR height < minimum value of .1 cm or > 100 cm</h4>";
-        valid = false;
-      }
-      
-      return valid;
+    function createData(_radius,_height,_outputUnits,_inputUnits){
+      console.log("in iDisk.html:createData ***************************");
+      var data = new Object();
+      data.radius = _radius;
+      data.height = _height;
+      data.outputUnits = _outputUnits;
+      data.inputUnits = _inputUnits;
+      var string = JSON.stringify(data);
+      console.log("out iDisk.html:createData ***************************");
+      return string;
     };
+ 
+    function validateInputs(_radius, _height) {
+        console.log("in iDisk.html:validateInputs ***************************");
+        // example for regex validation of fractions https://www.regextester.com/94462
+        var valid = true;
+        // turn text input into numbers or kick it back
+        var re = /[-]?[0-9]+[,.]?[0-9]*([\/][0-9]+[,.]?[0-9]*)*/;
+        var radR = re.test(_radius);
+        var hitR = re.test(_height);
+        var radius;
+        var height;
 
+        if (!radR) {
+            return false;
+            console.log("radius is not correctly formed");
+        }
 
-    
+        if (!hitR) {
+            return false;
+            console.log("height is not correctly formed");
+        }
+
+        if (_radius < 1 || _radius > 100) {
+            console.log("bad value for radius " + _radius);
+            document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR radius should be greater than the minimum value of 1cm</h4>"
+                + "<h4 style='color:red'> or less than the upper limit of 100cm</h4>";
+            valid = false;
+        }
+
+        if (_height < .1 || _height > 100) {
+            console.log("bad value for height " + _height);
+            document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR height < minimum value of .1 cm or > 100 cm</h4>";
+            valid = false;
+        }
+        console.log("out iDisk.html:validateInputs ***************************");
+        return valid;
+    };
   </script>
 
 

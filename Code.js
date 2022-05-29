@@ -15,16 +15,20 @@ function doGet(e) {
   // There must be a pageName parameter or we Error out.
 
   if (e.parameter.pageName == "mDisk") {
-    Logger.log("    in mDisk calc")
+    Logger.log("    in mDisk")
     return HtmlService.createHtmlOutputFromFile('mDisk').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   }  
-  else if (e.parameter.pageName == "Slab") {
-        Logger.log("    in Cuboid calc")
-   return HtmlService.createHtmlOutputFromFile('Slab').setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  else if (e.parameter.pageName == "mSlab") {
+        Logger.log("    in mSlab")
+   return HtmlService.createHtmlOutputFromFile('mSlab').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   } 
-  else if (e.parameter.pageName == "Custom") {
-        Logger.log("    in Custom")
-   return HtmlService.createHtmlOutputFromFile('Custom').setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  else if (e.parameter.pageName == "mCustom") {
+        Logger.log("    in mCustom")
+   return HtmlService.createHtmlOutputFromFile('mCustom').setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  } 
+  else if (e.parameter.pageName == "iDisk") {
+        Logger.log("    in iDisk")
+   return HtmlService.createHtmlOutputFromFile('iDisk').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   } 
   else {
     // No page defined so throw and error page
@@ -41,6 +45,7 @@ function doGet(e) {
  * json should have the 4 fields of glass,water,binder and liquid medium.
  */
 function createBaseVolume(volumeObject) {
+  console.log("in Code.gs : createBaseVolume ***********************");
   console.log("createBaseVolume: object passed to createRecipe " + JSON.stringify(volumeObject));
   // The total volume multiplied by 2 (the sg of MG) will give you the weight
   //  of the MG needed to fill the volume.
@@ -51,7 +56,9 @@ function createBaseVolume(volumeObject) {
   volumeObject.water = (volumeObject.total_weight * WATER).toFixed(1);
   volumeObject.binder = (volumeObject.total_weight * BINDER).toFixed(1);
   volumeObject.liquid_medium = (volumeObject.total_weight * LMEDIUM).toFixed(1);
-  
+
+  console.log("out Code.gs : createBaseVolume ***********************");
+
   return volumeObject;
 
 };
