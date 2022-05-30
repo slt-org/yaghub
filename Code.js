@@ -34,6 +34,10 @@ function doGet(e) {
         Logger.log("    calling iSlab")
    return HtmlService.createHtmlOutputFromFile('iSlab').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   } 
+  else if (e.parameter.pageName == "iCustom") {
+        Logger.log("    calling iCustom")
+   return HtmlService.createHtmlOutputFromFile('iCustom').setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  } 
   else {
     // No page defined so throw and error page
       Logger.log("    No page defined - Big old ERROR")

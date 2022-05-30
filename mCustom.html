@@ -78,7 +78,7 @@
 
     function validateInputs(_volume){
       var valid = true;
-        if(_volume < 10 || _volume > 1000 ){
+        if(_volume < 1 || _volume > 1000 ){
         console.log("bad value for volume "+_volume);
         document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR volume should be greater than the minimum value of 10 cubic centimeters</h4>" 
                                                        +"<h4 style='color:red'> or less than the upper limit of 1000 cubic centimeters</h4>";

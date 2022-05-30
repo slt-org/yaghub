@@ -1,19 +1,891 @@
-/*
-Fraction.js v4.2.0 05/03/2022
-https://www.xarg.org/2014/03/rational-numbers-in-javascript/
+/**
+ * @license Fraction.js v4.2.0 05/03/2022
+ * https://www.xarg.org/2014/03/rational-numbers-in-javascript/
+ *
+ * Copyright (c) 2021, Robert Eisele (robert@xarg.org)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ **/
 
-Copyright (c) 2021, Robert Eisele (robert@xarg.org)
-Dual licensed under the MIT or GPL Version 2 licenses.
-*/
-(function(z){function p(a,c){var b=0,d=1,f=1,l=0,k=0,t=0,x=1,u=1,g=0,h=1,v=1,q=1;if(void 0!==a&&null!==a)if(void 0!==c){if(b=a,d=c,f=b*d,0!==b%1||0!==d%1)throw m.NonIntegerParameter;}else switch(typeof a){case "object":if("d"in a&&"n"in a)b=a.n,d=a.d,"s"in a&&(b*=a.s);else if(0 in a)b=a[0],1 in a&&(d=a[1]);else throw m.InvalidParameter;f=b*d;break;case "number":0>a&&(f=a,a=-a);if(0===a%1)b=a;else if(0<a){1<=a&&(u=Math.pow(10,Math.floor(1+Math.log(a)/Math.LN10)),a/=u);for(;1E7>=h&&1E7>=q;)if(b=(g+
-        v)/(h+q),a===b){1E7>=h+q?(b=g+v,d=h+q):q>h?(b=v,d=q):(b=g,d=h);break}else a>b?(g+=v,h+=q):(v+=g,q+=h),1E7<h?(b=v,d=q):(b=g,d=h);b*=u}else if(isNaN(a)||isNaN(c))d=b=NaN;break;case "string":h=a.match(/\d+|./g);if(null===h)throw m.InvalidParameter;"-"===h[g]?(f=-1,g++):"+"===h[g]&&g++;if(h.length===g+1)k=r(h[g++],f);else if("."===h[g+1]||"."===h[g]){"."!==h[g]&&(l=r(h[g++],f));g++;if(g+1===h.length||"("===h[g+1]&&")"===h[g+3]||"'"===h[g+1]&&"'"===h[g+3])k=r(h[g],f),x=Math.pow(10,h[g].length),g++;if("("===
-        h[g]&&")"===h[g+2]||"'"===h[g]&&"'"===h[g+2])t=r(h[g+1],f),u=Math.pow(10,h[g+1].length)-1,g+=3}else"/"===h[g+1]||":"===h[g+1]?(k=r(h[g],f),x=r(h[g+2],1),g+=3):"/"===h[g+3]&&" "===h[g+1]&&(l=r(h[g],f),k=r(h[g+2],f),x=r(h[g+4],1),g+=5);if(h.length<=g){d=x*u;f=b=t+d*l+u*k;break}default:throw m.InvalidParameter;}if(0===d)throw m.DivisionByZero;e.s=0>f?-1:1;e.n=Math.abs(b);e.d=Math.abs(d)}function r(a,c){if(isNaN(a=parseInt(a,10)))throw m.InvalidParameter;return a*c}function n(a,c){if(0===c)throw m.DivisionByZero;
-  var b=Object.create(m.prototype);b.s=0>a?-1:1;a=0>a?-a:a;var d=w(a,c);b.n=a/d;b.d=c/d;return b}function y(a){for(var c={},b=a,d=2,f=4;f<=b;){for(;0===b%d;)b/=d,c[d]=(c[d]||0)+1;f+=1+2*d++}b!==a?1<b&&(c[b]=(c[b]||0)+1):c[a]=(c[a]||0)+1;return c}function w(a,c){if(!a)return c;if(!c)return a;for(;;){a%=c;if(!a)return c;c%=a;if(!c)return a}}function m(a,c){p(a,c);if(this instanceof m)a=w(e.d,e.n),this.s=e.s,this.n=e.n/a,this.d=e.d/a;else return n(e.s*e.n,e.d)}var e={s:1,n:0,d:1};m.DivisionByZero=Error("Division by Zero");
-  m.InvalidParameter=Error("Invalid argument");m.NonIntegerParameter=Error("Parameters must be integer");m.prototype={s:1,n:0,d:1,abs:function(){return n(this.n,this.d)},neg:function(){return n(-this.s*this.n,this.d)},add:function(a,c){p(a,c);return n(this.s*this.n*e.d+e.s*this.d*e.n,this.d*e.d)},sub:function(a,c){p(a,c);return n(this.s*this.n*e.d-e.s*this.d*e.n,this.d*e.d)},mul:function(a,c){p(a,c);return n(this.s*e.s*this.n*e.n,this.d*e.d)},div:function(a,c){p(a,c);return n(this.s*e.s*this.n*e.d,
-            this.d*e.n)},clone:function(){return n(this.s*this.n,this.d)},mod:function(a,c){if(isNaN(this.n)||isNaN(this.d))return new m(NaN);if(void 0===a)return n(this.s*this.n%this.d,1);p(a,c);if(0===e.n&&0===this.d)throw m.DivisionByZero;return n(this.s*e.d*this.n%(e.n*this.d),e.d*this.d)},gcd:function(a,c){p(a,c);return n(w(e.n,this.n)*w(e.d,this.d),e.d*this.d)},lcm:function(a,c){p(a,c);return 0===e.n&&0===this.n?n(0,1):n(e.n*this.n,w(e.n,this.n)*w(e.d,this.d))},ceil:function(a){a=Math.pow(10,a||0);return isNaN(this.n)||
-    isNaN(this.d)?new m(NaN):n(Math.ceil(a*this.s*this.n/this.d),a)},floor:function(a){a=Math.pow(10,a||0);return isNaN(this.n)||isNaN(this.d)?new m(NaN):n(Math.floor(a*this.s*this.n/this.d),a)},round:function(a){a=Math.pow(10,a||0);return isNaN(this.n)||isNaN(this.d)?new m(NaN):n(Math.round(a*this.s*this.n/this.d),a)},inverse:function(){return n(this.s*this.d,this.n)},pow:function(a,c){p(a,c);if(1===e.d)return 0>e.s?n(Math.pow(this.s*this.d,e.n),Math.pow(this.n,e.n)):n(Math.pow(this.s*this.n,e.n),Math.pow(this.d,
-            e.n));if(0>this.s)return null;var b=y(this.n),d=y(this.d),f=1,l=1,k;for(k in b)if("1"!==k){if("0"===k){f=0;break}b[k]*=e.n;if(0===b[k]%e.d)b[k]/=e.d;else return null;f*=Math.pow(k,b[k])}for(k in d)if("1"!==k){d[k]*=e.n;if(0===d[k]%e.d)d[k]/=e.d;else return null;l*=Math.pow(k,d[k])}return 0>e.s?n(l,f):n(f,l)},equals:function(a,c){p(a,c);return this.s*this.n*e.d===e.s*e.n*this.d},compare:function(a,c){p(a,c);var b=this.s*this.n*e.d-e.s*e.n*this.d;return(0<b)-(0>b)},simplify:function(a){if(isNaN(this.n)||
-            isNaN(this.d))return this;a=a||.001;for(var c=this.abs(),b=c.toContinued(),d=1;d<b.length;d++){for(var f=n(b[d-1],1),l=d-2;0<=l;l--)f=f.inverse().add(b[l]);if(f.sub(c).abs().valueOf()<a)return f.mul(this.s)}return this},divisible:function(a,c){p(a,c);return!(!(e.n*this.d)||this.n*e.d%(e.n*this.d))},valueOf:function(){return this.s*this.n/this.d},toFraction:function(a){var c,b="",d=this.n,f=this.d;0>this.s&&(b+="-");1===f?b+=d:(a&&0<(c=Math.floor(d/f))&&(b=b+c+" ",d%=f),b=b+d+"/",b+=f);return b},toLatex:function(a){var c,
-            b="",d=this.n,f=this.d;0>this.s&&(b+="-");1===f?b+=d:(a&&0<(c=Math.floor(d/f))&&(b+=c,d%=f),b=b+"\\frac{"+d+"}{"+f,b+="}");return b},toContinued:function(){var a=this.n,c=this.d,b=[];if(isNaN(a)||isNaN(c))return b;do{b.push(Math.floor(a/c));var d=a%c;a=c;c=d}while(1!==a);return b},toString:function(a){var c=this.n,b=this.d;if(isNaN(c)||isNaN(b))return"NaN";var d;a:{for(d=b;0===d%2;d/=2);for(;0===d%5;d/=5);if(1===d)d=0;else{for(var f=10%d,l=1;1!==f;l++)if(f=10*f%d,2E3<l){d=0;break a}d=l}}a:{f=1;l=
-            10;for(var k=d,t=1;0<k;l=l*l%b,k>>=1)k&1&&(t=t*l%b);l=t;for(k=0;300>k;k++){if(f===l){l=k;break a}f=10*f%b;l=10*l%b}l=0}f=0>this.s?"-":"";f+=c/b|0;(c=c%b*10)&&(f+=".");if(d){for(a=l;a--;)f+=c/b|0,c%=b,c*=10;f+="(";for(a=d;a--;)f+=c/b|0,c%=b,c*=10;f+=")"}else for(a=a||15;c&&a--;)f+=c/b|0,c%=b,c*=10;return f}};"function"===typeof define&&define.amd?define([],function(){return m}):"object"===typeof exports?(Object.defineProperty(m,"__esModule",{value:!0}),m["default"]=m,m.Fraction=m,module.exports=m):
-          z.Fraction=m})(this);
+
+/**
+ *
+ * This class offers the possibility to calculate fractions.
+ * You can pass a fraction in different formats. Either as array, as double, as string or as an integer.
+ *
+ * Array/Object form
+ * [ 0 => <nominator>, 1 => <denominator> ]
+ * [ n => <nominator>, d => <denominator> ]
+ *
+ * Integer form
+ * - Single integer value
+ *
+ * Double form
+ * - Single double value
+ *
+ * String form
+ * 123.456 - a simple double
+ * 123/456 - a string fraction
+ * 123.'456' - a double with repeating decimal places
+ * 123.(456) - synonym
+ * 123.45'6' - a double with repeating last place
+ * 123.45(6) - synonym
+ *
+ * Example:
+ *
+ * var f = new Fraction("9.4'31'");
+ * f.mul([-4, 3]).div(4.9);
+ *
+ */
+
+(function(root) {
+
+  "use strict";
+
+  // Maximum search depth for cyclic rational numbers. 2000 should be more than enough.
+  // Example: 1/7 = 0.(142857) has 6 repeating decimal places.
+  // If MAX_CYCLE_LEN gets reduced, long cycles will not be detected and toString() only gets the first 10 digits
+  var MAX_CYCLE_LEN = 2000;
+
+  // Parsed data to avoid calling "new" all the time
+  var P = {
+    "s": 1,
+    "n": 0,
+    "d": 1
+  };
+
+  function assign(n, s) {
+
+    if (isNaN(n = parseInt(n, 10))) {
+      throw Fraction['InvalidParameter'];
+    }
+    return n * s;
+  }
+
+  // Creates a new Fraction internally without the need of the bulky constructor
+  function newFraction(n, d) {
+
+    if (d === 0) {
+      throw Fraction['DivisionByZero'];
+    }
+
+    var f = Object.create(Fraction.prototype);
+    f["s"] = n < 0 ? -1 : 1;
+
+    n = n < 0 ? -n : n;
+
+    var a = gcd(n, d);
+
+    f["n"] = n / a;
+    f["d"] = d / a;
+    return f;
+  }
+
+  function factorize(num) {
+
+    var factors = {};
+
+    var n = num;
+    var i = 2;
+    var s = 4;
+
+    while (s <= n) {
+
+      while (n % i === 0) {
+        n/= i;
+        factors[i] = (factors[i] || 0) + 1;
+      }
+      s+= 1 + 2 * i++;
+    }
+
+    if (n !== num) {
+      if (n > 1)
+        factors[n] = (factors[n] || 0) + 1;
+    } else {
+      factors[num] = (factors[num] || 0) + 1;
+    }
+    return factors;
+  }
+
+  var parse = function(p1, p2) {
+
+    var n = 0, d = 1, s = 1;
+    var v = 0, w = 0, x = 0, y = 1, z = 1;
+
+    var A = 0, B = 1;
+    var C = 1, D = 1;
+
+    var N = 10000000;
+    var M;
+
+    if (p1 === undefined || p1 === null) {
+      /* void */
+    } else if (p2 !== undefined) {
+      n = p1;
+      d = p2;
+      s = n * d;
+
+      if (n % 1 !== 0 || d % 1 !== 0) {
+        throw Fraction['NonIntegerParameter'];
+      }
+
+    } else
+      switch (typeof p1) {
+
+        case "object":
+          {
+            if ("d" in p1 && "n" in p1) {
+              n = p1["n"];
+              d = p1["d"];
+              if ("s" in p1)
+                n*= p1["s"];
+            } else if (0 in p1) {
+              n = p1[0];
+              if (1 in p1)
+                d = p1[1];
+            } else {
+              throw Fraction['InvalidParameter'];
+            }
+            s = n * d;
+            break;
+          }
+        case "number":
+          {
+            if (p1 < 0) {
+              s = p1;
+              p1 = -p1;
+            }
+
+            if (p1 % 1 === 0) {
+              n = p1;
+            } else if (p1 > 0) { // check for != 0, scale would become NaN (log(0)), which converges really slow
+
+              if (p1 >= 1) {
+                z = Math.pow(10, Math.floor(1 + Math.log(p1) / Math.LN10));
+                p1/= z;
+              }
+
+              // Using Farey Sequences
+              // http://www.johndcook.com/blog/2010/10/20/best-rational-approximation/
+
+              while (B <= N && D <= N) {
+                M = (A + C) / (B + D);
+
+                if (p1 === M) {
+                  if (B + D <= N) {
+                    n = A + C;
+                    d = B + D;
+                  } else if (D > B) {
+                    n = C;
+                    d = D;
+                  } else {
+                    n = A;
+                    d = B;
+                  }
+                  break;
+
+                } else {
+
+                  if (p1 > M) {
+                    A+= C;
+                    B+= D;
+                  } else {
+                    C+= A;
+                    D+= B;
+                  }
+
+                  if (B > N) {
+                    n = C;
+                    d = D;
+                  } else {
+                    n = A;
+                    d = B;
+                  }
+                }
+              }
+              n*= z;
+            } else if (isNaN(p1) || isNaN(p2)) {
+              d = n = NaN;
+            }
+            break;
+          }
+        case "string":
+          {
+            B = p1.match(/\d+|./g);
+
+            if (B === null)
+              throw Fraction['InvalidParameter'];
+
+            if (B[A] === '-') {// Check for minus sign at the beginning
+              s = -1;
+              A++;
+            } else if (B[A] === '+') {// Check for plus sign at the beginning
+              A++;
+            }
+
+            if (B.length === A + 1) { // Check if it's just a simple number "1234"
+              w = assign(B[A++], s);
+            } else if (B[A + 1] === '.' || B[A] === '.') { // Check if it's a decimal number
+
+              if (B[A] !== '.') { // Handle 0.5 and .5
+                v = assign(B[A++], s);
+              }
+              A++;
+
+              // Check for decimal places
+              if (A + 1 === B.length || B[A + 1] === '(' && B[A + 3] === ')' || B[A + 1] === "'" && B[A + 3] === "'") {
+                w = assign(B[A], s);
+                y = Math.pow(10, B[A].length);
+                A++;
+              }
+
+              // Check for repeating places
+              if (B[A] === '(' && B[A + 2] === ')' || B[A] === "'" && B[A + 2] === "'") {
+                x = assign(B[A + 1], s);
+                z = Math.pow(10, B[A + 1].length) - 1;
+                A+= 3;
+              }
+
+            } else if (B[A + 1] === '/' || B[A + 1] === ':') { // Check for a simple fraction "123/456" or "123:456"
+              w = assign(B[A], s);
+              y = assign(B[A + 2], 1);
+              A+= 3;
+            } else if (B[A + 3] === '/' && B[A + 1] === ' ') { // Check for a complex fraction "123 1/2"
+              v = assign(B[A], s);
+              w = assign(B[A + 2], s);
+              y = assign(B[A + 4], 1);
+              A+= 5;
+            }
+
+            if (B.length <= A) { // Check for more tokens on the stack
+              d = y * z;
+              s = /* void */
+              n = x + d * v + z * w;
+              break;
+            }
+
+            /* Fall through on error */
+          }
+        default:
+          throw Fraction['InvalidParameter'];
+      }
+
+    if (d === 0) {
+      throw Fraction['DivisionByZero'];
+    }
+
+    P["s"] = s < 0 ? -1 : 1;
+    P["n"] = Math.abs(n);
+    P["d"] = Math.abs(d);
+  };
+
+  function modpow(b, e, m) {
+
+    var r = 1;
+    for (; e > 0; b = (b * b) % m, e >>= 1) {
+
+      if (e & 1) {
+        r = (r * b) % m;
+      }
+    }
+    return r;
+  }
+
+
+  function cycleLen(n, d) {
+
+    for (; d % 2 === 0;
+      d/= 2) {
+    }
+
+    for (; d % 5 === 0;
+      d/= 5) {
+    }
+
+    if (d === 1) // Catch non-cyclic numbers
+      return 0;
+
+    // If we would like to compute really large numbers quicker, we could make use of Fermat's little theorem:
+    // 10^(d-1) % d == 1
+    // However, we don't need such large numbers and MAX_CYCLE_LEN should be the capstone,
+    // as we want to translate the numbers to strings.
+
+    var rem = 10 % d;
+    var t = 1;
+
+    for (; rem !== 1; t++) {
+      rem = rem * 10 % d;
+
+      if (t > MAX_CYCLE_LEN)
+        return 0; // Returning 0 here means that we don't print it as a cyclic number. It's likely that the answer is `d-1`
+    }
+    return t;
+  }
+
+
+  function cycleStart(n, d, len) {
+
+    var rem1 = 1;
+    var rem2 = modpow(10, len, d);
+
+    for (var t = 0; t < 300; t++) { // s < ~log10(Number.MAX_VALUE)
+      // Solve 10^s == 10^(s+t) (mod d)
+
+      if (rem1 === rem2)
+        return t;
+
+      rem1 = rem1 * 10 % d;
+      rem2 = rem2 * 10 % d;
+    }
+    return 0;
+  }
+
+  function gcd(a, b) {
+
+    if (!a)
+      return b;
+    if (!b)
+      return a;
+
+    while (1) {
+      a%= b;
+      if (!a)
+        return b;
+      b%= a;
+      if (!b)
+        return a;
+    }
+  };
+
+  /**
+   * Module constructor
+   *
+   * @constructor
+   * @param {number|Fraction=} a
+   * @param {number=} b
+   */
+  function Fraction(a, b) {
+
+    parse(a, b);
+
+    if (this instanceof Fraction) {
+      a = gcd(P["d"], P["n"]); // Abuse variable a
+      this["s"] = P["s"];
+      this["n"] = P["n"] / a;
+      this["d"] = P["d"] / a;
+    } else {
+      return newFraction(P['s'] * P['n'], P['d']);
+    }
+  }
+
+  Fraction['DivisionByZero'] = new Error("Division by Zero");
+  Fraction['InvalidParameter'] = new Error("Invalid argument");
+  Fraction['NonIntegerParameter'] = new Error("Parameters must be integer");
+
+  Fraction.prototype = {
+
+    "s": 1,
+    "n": 0,
+    "d": 1,
+
+    /**
+     * Calculates the absolute value
+     *
+     * Ex: new Fraction(-4).abs() => 4
+     **/
+    "abs": function() {
+
+      return newFraction(this["n"], this["d"]);
+    },
+
+    /**
+     * Inverts the sign of the current fraction
+     *
+     * Ex: new Fraction(-4).neg() => 4
+     **/
+    "neg": function() {
+
+      return newFraction(-this["s"] * this["n"], this["d"]);
+    },
+
+    /**
+     * Adds two rational numbers
+     *
+     * Ex: new Fraction({n: 2, d: 3}).add("14.9") => 467 / 30
+     **/
+    "add": function(a, b) {
+
+      parse(a, b);
+      return newFraction(
+        this["s"] * this["n"] * P["d"] + P["s"] * this["d"] * P["n"],
+        this["d"] * P["d"]
+      );
+    },
+
+    /**
+     * Subtracts two rational numbers
+     *
+     * Ex: new Fraction({n: 2, d: 3}).add("14.9") => -427 / 30
+     **/
+    "sub": function(a, b) {
+
+      parse(a, b);
+      return newFraction(
+        this["s"] * this["n"] * P["d"] - P["s"] * this["d"] * P["n"],
+        this["d"] * P["d"]
+      );
+    },
+
+    /**
+     * Multiplies two rational numbers
+     *
+     * Ex: new Fraction("-17.(345)").mul(3) => 5776 / 111
+     **/
+    "mul": function(a, b) {
+
+      parse(a, b);
+      return newFraction(
+        this["s"] * P["s"] * this["n"] * P["n"],
+        this["d"] * P["d"]
+      );
+    },
+
+    /**
+     * Divides two rational numbers
+     *
+     * Ex: new Fraction("-17.(345)").inverse().div(3)
+     **/
+    "div": function(a, b) {
+
+      parse(a, b);
+      return newFraction(
+        this["s"] * P["s"] * this["n"] * P["d"],
+        this["d"] * P["n"]
+      );
+    },
+
+    /**
+     * Clones the actual object
+     *
+     * Ex: new Fraction("-17.(345)").clone()
+     **/
+    "clone": function() {
+      return newFraction(this['s'] * this['n'], this['d']);
+    },
+
+    /**
+     * Calculates the modulo of two rational numbers - a more precise fmod
+     *
+     * Ex: new Fraction('4.(3)').mod([7, 8]) => (13/3) % (7/8) = (5/6)
+     **/
+    "mod": function(a, b) {
+
+      if (isNaN(this['n']) || isNaN(this['d'])) {
+        return new Fraction(NaN);
+      }
+
+      if (a === undefined) {
+        return newFraction(this["s"] * this["n"] % this["d"], 1);
+      }
+
+      parse(a, b);
+      if (0 === P["n"] && 0 === this["d"]) {
+        throw Fraction['DivisionByZero'];
+      }
+
+      /*
+       * First silly attempt, kinda slow
+       *
+       return that["sub"]({
+       "n": num["n"] * Math.floor((this.n / this.d) / (num.n / num.d)),
+       "d": num["d"],
+       "s": this["s"]
+       });*/
+
+      /*
+       * New attempt: a1 / b1 = a2 / b2 * q + r
+       * => b2 * a1 = a2 * b1 * q + b1 * b2 * r
+       * => (b2 * a1 % a2 * b1) / (b1 * b2)
+       */
+      return newFraction(
+        this["s"] * (P["d"] * this["n"]) % (P["n"] * this["d"]),
+        P["d"] * this["d"]
+      );
+    },
+
+    /**
+     * Calculates the fractional gcd of two rational numbers
+     *
+     * Ex: new Fraction(5,8).gcd(3,7) => 1/56
+     */
+    "gcd": function(a, b) {
+
+      parse(a, b);
+
+      // gcd(a / b, c / d) = gcd(a, c) / lcm(b, d)
+
+      return newFraction(gcd(P["n"], this["n"]) * gcd(P["d"], this["d"]), P["d"] * this["d"]);
+    },
+
+    /**
+     * Calculates the fractional lcm of two rational numbers
+     *
+     * Ex: new Fraction(5,8).lcm(3,7) => 15
+     */
+    "lcm": function(a, b) {
+
+      parse(a, b);
+
+      // lcm(a / b, c / d) = lcm(a, c) / gcd(b, d)
+
+      if (P["n"] === 0 && this["n"] === 0) {
+        return newFraction(0, 1);
+      }
+      return newFraction(P["n"] * this["n"], gcd(P["n"], this["n"]) * gcd(P["d"], this["d"]));
+    },
+
+    /**
+     * Calculates the ceil of a rational number
+     *
+     * Ex: new Fraction('4.(3)').ceil() => (5 / 1)
+     **/
+    "ceil": function(places) {
+
+      places = Math.pow(10, places || 0);
+
+      if (isNaN(this["n"]) || isNaN(this["d"])) {
+        return new Fraction(NaN);
+      }
+      return newFraction(Math.ceil(places * this["s"] * this["n"] / this["d"]), places);
+    },
+
+    /**
+     * Calculates the floor of a rational number
+     *
+     * Ex: new Fraction('4.(3)').floor() => (4 / 1)
+     **/
+    "floor": function(places) {
+
+      places = Math.pow(10, places || 0);
+
+      if (isNaN(this["n"]) || isNaN(this["d"])) {
+        return new Fraction(NaN);
+      }
+      return newFraction(Math.floor(places * this["s"] * this["n"] / this["d"]), places);
+    },
+
+    /**
+     * Rounds a rational numbers
+     *
+     * Ex: new Fraction('4.(3)').round() => (4 / 1)
+     **/
+    "round": function(places) {
+
+      places = Math.pow(10, places || 0);
+
+      if (isNaN(this["n"]) || isNaN(this["d"])) {
+        return new Fraction(NaN);
+      }
+      return newFraction(Math.round(places * this["s"] * this["n"] / this["d"]), places);
+    },
+
+    /**
+     * Gets the inverse of the fraction, means numerator and denominator are exchanged
+     *
+     * Ex: new Fraction([-3, 4]).inverse() => -4 / 3
+     **/
+    "inverse": function() {
+
+      return newFraction(this["s"] * this["d"], this["n"]);
+    },
+
+    /**
+     * Calculates the fraction to some rational exponent, if possible
+     *
+     * Ex: new Fraction(-1,2).pow(-3) => -8
+     */
+    "pow": function(a, b) {
+
+      parse(a, b);
+
+      // Trivial case when exp is an integer
+
+      if (P['d'] === 1) {
+
+        if (P['s'] < 0) {
+          return newFraction(Math.pow(this['s'] * this["d"], P['n']), Math.pow(this["n"], P['n']));
+        } else {
+          return newFraction(Math.pow(this['s'] * this["n"], P['n']), Math.pow(this["d"], P['n']));
+        }
+      }
+
+      // Negative roots become complex
+      //     (-a/b)^(c/d) = x
+      // <=> (-1)^(c/d) * (a/b)^(c/d) = x
+      // <=> (cos(pi) + i*sin(pi))^(c/d) * (a/b)^(c/d) = x         # rotate 1 by 180°
+      // <=> (cos(c*pi/d) + i*sin(c*pi/d)) * (a/b)^(c/d) = x       # DeMoivre's formula in Q ( https://proofwiki.org/wiki/De_Moivre%27s_Formula/Rational_Index )
+      // From which follows that only for c=0 the root is non-complex. c/d is a reduced fraction, so that sin(c/dpi)=0 occurs for d=1, which is handled by our trivial case.
+      if (this['s'] < 0) return null;
+
+      // Now prime factor n and d
+      var N = factorize(this['n']);
+      var D = factorize(this['d']);
+
+      // Exponentiate and take root for n and d individually
+      var n = 1;
+      var d = 1;
+      for (var k in N) {
+        if (k === '1') continue;
+        if (k === '0') {
+          n = 0;
+          break;
+        }
+        N[k]*= P['n'];
+
+        if (N[k] % P['d'] === 0) {
+          N[k]/= P['d'];
+        } else return null;
+        n*= Math.pow(k, N[k]);
+      }
+
+      for (var k in D) {
+        if (k === '1') continue;
+        D[k]*= P['n'];
+
+        if (D[k] % P['d'] === 0) {
+          D[k]/= P['d'];
+        } else return null;
+        d*= Math.pow(k, D[k]);
+      }
+
+      if (P['s'] < 0) {
+        return newFraction(d, n);
+      }
+      return newFraction(n, d);
+    },
+
+    /**
+     * Check if two rational numbers are the same
+     *
+     * Ex: new Fraction(19.6).equals([98, 5]);
+     **/
+    "equals": function(a, b) {
+
+      parse(a, b);
+      return this["s"] * this["n"] * P["d"] === P["s"] * P["n"] * this["d"]; // Same as compare() === 0
+    },
+
+    /**
+     * Check if two rational numbers are the same
+     *
+     * Ex: new Fraction(19.6).equals([98, 5]);
+     **/
+    "compare": function(a, b) {
+
+      parse(a, b);
+      var t = (this["s"] * this["n"] * P["d"] - P["s"] * P["n"] * this["d"]);
+      return (0 < t) - (t < 0);
+    },
+
+    "simplify": function(eps) {
+
+      if (isNaN(this['n']) || isNaN(this['d'])) {
+        return this;
+      }
+
+      eps = eps || 0.001;
+
+      var thisABS = this['abs']();
+      var cont = thisABS['toContinued']();
+
+      for (var i = 1; i < cont.length; i++) {
+
+        var s = newFraction(cont[i - 1], 1);
+        for (var k = i - 2; k >= 0; k--) {
+          s = s['inverse']()['add'](cont[k]);
+        }
+
+        if (s['sub'](thisABS)['abs']().valueOf() < eps) {
+          return s['mul'](this['s']);
+        }
+      }
+      return this;
+    },
+
+    /**
+     * Check if two rational numbers are divisible
+     *
+     * Ex: new Fraction(19.6).divisible(1.5);
+     */
+    "divisible": function(a, b) {
+
+      parse(a, b);
+      return !(!(P["n"] * this["d"]) || ((this["n"] * P["d"]) % (P["n"] * this["d"])));
+    },
+
+    /**
+     * Returns a decimal representation of the fraction
+     *
+     * Ex: new Fraction("100.'91823'").valueOf() => 100.91823918239183
+     **/
+    'valueOf': function() {
+
+      return this["s"] * this["n"] / this["d"];
+    },
+
+    /**
+     * Returns a string-fraction representation of a Fraction object
+     *
+     * Ex: new Fraction("1.'3'").toFraction(true) => "4 1/3"
+     **/
+    'toFraction': function(excludeWhole) {
+
+      var whole, str = "";
+      var n = this["n"];
+      var d = this["d"];
+      if (this["s"] < 0) {
+        str+= '-';
+      }
+
+      if (d === 1) {
+        str+= n;
+      } else {
+
+        if (excludeWhole && (whole = Math.floor(n / d)) > 0) {
+          str+= whole;
+          str+= " ";
+          n%= d;
+        }
+
+        str+= n;
+        str+= '/';
+        str+= d;
+      }
+      return str;
+    },
+
+    /**
+     * Returns a latex representation of a Fraction object
+     *
+     * Ex: new Fraction("1.'3'").toLatex() => "\frac{4}{3}"
+     **/
+    'toLatex': function(excludeWhole) {
+
+      var whole, str = "";
+      var n = this["n"];
+      var d = this["d"];
+      if (this["s"] < 0) {
+        str+= '-';
+      }
+
+      if (d === 1) {
+        str+= n;
+      } else {
+
+        if (excludeWhole && (whole = Math.floor(n / d)) > 0) {
+          str+= whole;
+          n%= d;
+        }
+
+        str+= "\\frac{";
+        str+= n;
+        str+= '}{';
+        str+= d;
+        str+= '}';
+      }
+      return str;
+    },
+
+    /**
+     * Returns an array of continued fraction elements
+     *
+     * Ex: new Fraction("7/8").toContinued() => [0,1,7]
+     */
+    'toContinued': function() {
+
+      var t;
+      var a = this['n'];
+      var b = this['d'];
+      var res = [];
+
+      if (isNaN(a) || isNaN(b)) {
+        return res;
+      }
+
+      do {
+        res.push(Math.floor(a / b));
+        t = a % b;
+        a = b;
+        b = t;
+      } while (a !== 1);
+
+      return res;
+    },
+
+    /**
+     * Creates a string representation of a fraction with all digits
+     *
+     * Ex: new Fraction("100.'91823'").toString() => "100.(91823)"
+     **/
+    'toString': function(dec) {
+
+      var N = this["n"];
+      var D = this["d"];
+
+      if (isNaN(N) || isNaN(D)) {
+        return "NaN";
+      }
+
+      dec = dec || 15; // 15 = decimal places when no repetation
+
+      var cycLen = cycleLen(N, D); // Cycle length
+      var cycOff = cycleStart(N, D, cycLen); // Cycle start
+
+      var str = this['s'] < 0 ? "-" : "";
+
+      str+= N / D | 0;
+
+      N%= D;
+      N*= 10;
+
+      if (N)
+        str+= ".";
+
+      if (cycLen) {
+
+        for (var i = cycOff; i--;) {
+          str+= N / D | 0;
+          N%= D;
+          N*= 10;
+        }
+        str+= "(";
+        for (var i = cycLen; i--;) {
+          str+= N / D | 0;
+          N%= D;
+          N*= 10;
+        }
+        str+= ")";
+      } else {
+        for (var i = dec; N && i--;) {
+          str+= N / D | 0;
+          N%= D;
+          N*= 10;
+        }
+      }
+      return str;
+    }
+  };
+
+  if (typeof define === "function" && define["amd"]) {
+    define([], function() {
+      return Fraction;
+    });
+  } else if (typeof exports === "object") {
+    Object.defineProperty(Fraction, "__esModule", { 'value': true });
+    Fraction['default'] = Fraction;
+    Fraction['Fraction'] = Fraction;
+    module['exports'] = Fraction;
+  } else {
+    root['Fraction'] = Fraction;
+  }
+
+})(this);

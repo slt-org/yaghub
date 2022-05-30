@@ -3,6 +3,7 @@
 
 <head>
   <base target="_top">
+    <script src="https://unpkg.com/mathjs@10.6.0/lib/browser/math.js"></script>  
   <style>
     body {
       font: 15px Arial, sans-serif;
@@ -14,8 +15,9 @@
   <h2>Custom Calculation</h2>
   <h4>Imperial version</h4>
   <p>Inputs can be decimal or fractions</p>
+
   <label for="volume"> Volume </label>
-  <input type="number" id="volume" name="volume" min="15" max="1000" step="0.1" required/>  cubic centimeters<br><br>
+  <input type="text" id="volume" name="volume" required/>  cubic inches<br><br>
   <p><b>Please select your preferred units of measure for recipe output :</b></p>
   <div>
     <label for="outputUnits">Output units: </label>
@@ -35,14 +37,17 @@
   </div>
 
   <script>
+
     /**
      * Send disk inputs to Google Apps Script and returns a calculated
      * value back to display on page.
      */
     function sendData() {
       console.log("in iCustom.html:sendData ***************************");
-      var _inputUnits = "metric";
-      //Get inputted number and result div
+      const CITOCC = 16.387;
+      const INTOCM = 2.54;
+      var _inputUnits = "imperial";
+      //Get input and result div
       let _volume = document.querySelector('#volume').value;
       let _outputUnits  = document.querySelector('input[name=outputUnits]:checked').value; 
       console.log("outputUnits: "+_outputUnits);
@@ -51,7 +56,12 @@
       var valid = validateInputs(_volume);
       if(!valid){  return; };
 
-      var dataToSend = createData(_volume,_outputUnits,_inputUnits);
+      // convert the volume to cubic centimeters
+      var volume = Number(math.fraction(_volume));
+      volume = volume*CITOCC; 
+    
+      // volume in cubic inches has been converted to cubic centimeters       
+      var dataToSend = createData(volume,_outputUnits,_inputUnits);
 
       let updateLocation = document.querySelector('#result');
 
@@ -85,7 +95,17 @@
       console.log("in iCustom.html:validateInputs ***************************");
 
       var valid = true;
-        if(_volume < 10 || _volume > 1000 ){
+              // turn text input into numbers or kick it back
+        var re = /[-]?[0-9]+[,.]?[0-9]*([\/][0-9]+[,.]?[0-9]*)*/;
+        var volR = re.test(_volume);
+        var volume;
+
+        if (!volR) {
+            return false;
+            console.log("volume is not correctly formed");
+        }
+
+        if(_volume < 1 || _volume > 1000 ){
         console.log("bad value for volume "+_volume);
         document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR volume should be greater than the minimum value of 10 cubic centimeters</h4>" 
                                                        +"<h4 style='color:red'> or less than the upper limit of 1000 cubic centimeters</h4>";
