@@ -6,11 +6,11 @@
   * @param {string} element - json as text from server-side
   * @return {string} as html for MG batch recipe.
   */
-function mGetCuboidRecipeFromWebAPP(element) {
-  Logger.log("mGetCuboidRecipeFromWebAPP: input of element from client side :")
+function mGetSlabRecipeFromWebAPP(element) {
+  Logger.log("mGetSlabRecipeFromWebAPP: input of element from client side :")
   Logger.log(element);
   //Just a quick proof that the returned number value will be a text. Remove on production.
-  Logger.log(`mGetCuboidRecipeFromWebAPP: Returned json is: ${element}`, typeof element);
+  Logger.log(`mGetSlabRecipeFromWebAPP: Returned json is: ${element}`, typeof element);
 
   /**
    * This all belongs under validation
@@ -21,15 +21,16 @@ function mGetCuboidRecipeFromWebAPP(element) {
 
   // Turn json text into json object
   var parsed_obj = JSON.parse(element);
-  Logger.log("mGetCuboidRecipeFromWebAPP: json object parsed from serverside: length="+parsed_obj.length+" width="+parsed_obj.width+" height="+parsed_obj.height+" units="+parsed_obj.units);
+  Logger.log("mGetSlabRecipeFromWebAPP: json object parsed from serverside: length="+parsed_obj.length+" width="+parsed_obj.width+" height="+parsed_obj.height
+              +" outputUnits="+parsed_obj.outputUnits+" inputUnits="+parsed_obj.inputUnits);
   
-  var volumeObject = cuboidCalcMetric(parsed_obj.length,parsed_obj.width,parsed_obj.height,parsed_obj.units);
+  var volumeObject = slabCalcMetric(parsed_obj.length,parsed_obj.width,parsed_obj.height,parsed_obj.outputUnits,parsed_obj.inputUnits);
   var resultHtml;
 
-  if(volumeObject.units == "metric"){
+  if(volumeObject.outputUnits == "metric"){
     // produce the metric version of recipe
     resultHtml = mCreateRecipeTableHtml(volumeObject);
-  }else if (volumeObject.units == "imperial") {
+  }else if (volumeObject.outputUnits == "imperial") {
     // produce the imperial version of recipe
     // need to take the volumeObject down the Imperial path.
     resultHtml = iCreateRecipeTableHtml(volumeObject);
@@ -38,7 +39,6 @@ function mGetCuboidRecipeFromWebAPP(element) {
      resultHtml = "Failed to create recipe...  ERROR";
   }
 
-  // Logger.log("mGetCuboidRecipeFromWebAPP: html from server to send back: " + resultHtml);
 
   return resultHtml;
 };
@@ -51,16 +51,17 @@ function mGetCuboidRecipeFromWebAPP(element) {
  *  @param {string} height - number as text.
  *  @return {object} contains input values and calculated volume. 
  */
-function cuboidCalcMetric(length,width,height,units){
-  Logger.log("cuboidCalcMetric: value parameters on call length="+length+" width="+width+" height="+height+" units="+units);
+function slabCalcMetric(length,width,height,outputUnits,inputUnits){
+  Logger.log("slabCalcMetric: value parameters on call length="+length+" width="+width+" height="+height+" outputUnits="+outputUnits+" inputUnits="+inputUnits);
   var volumeObject = new Object();
   volumeObject.volume = length*width*height;
   volumeObject.length=length;
   volumeObject.width=width;
   volumeObject.height=height;
-  volumeObject.units=units;
+  volumeObject.outputUnits=outputUnits;
+  volumeObject.inputUnits=inputUnits;
 
-  Logger.log("cuboidCalcMetric: raw volume in "+units+"= "+volumeObject.volume);
+  Logger.log("slabCalcMetric: raw volume in "+outputUnits+"= "+volumeObject.volume);
 
   return volumeObject
 }

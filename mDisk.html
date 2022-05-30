@@ -14,9 +14,9 @@
   <h2>Disk Calculation</h2>
   <h4>Metric version</h4>
   <label for="radius"> Radius </label>
-  <input type="number" id="radius" name="radius"  min="0.1" max="100" step=".1" required/>  centimeters<br><br>
+  <input type="number" id="radius" name="radius" required/>  centimeters<br><br>
   <label for="height"> Height </label>
-  <input type="number" id="height" name="height"  min="0.1" max="100"  step=".1" required/>  centimeters<br><br>
+  <input type="number" id="height" name="height" required/>  centimeters<br><br>
   <p><b>Please select your preferred units of measure for recipe output :</b></p>
   <div>
     <label for="outputUnits">Output units: </label>
@@ -40,6 +40,7 @@
      * value back to display on page.
      */
     function sendData() {
+      console.log("in mDisk.html:sendData ***************************");
       const _inputUnits = "metric";
       
       //Get inputted number and result div
@@ -69,6 +70,7 @@
       }
 
       google.script.run.withFailureHandler(onFailure).withSuccessHandler(onSuccess).mGetDiskRecipeFromWebAPP(dataToSend);
+      console.log("out mDisk.html:sendData ***************************");
 
     };
 

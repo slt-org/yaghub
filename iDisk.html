@@ -68,8 +68,10 @@
 
       // We've turned the fraction or decimal text input into numbers.
       // the numbers are still in the imperial units number system.
-      // Convert them once on the server side.
-      var dataToSend = createData(Number(radius),Number(height),_outputUnits,_inputUnits);
+      // Convert them to metric and use the metric path.
+      var convertedInputs = convertInputsToMetric(Number(radius),Number(height));
+      var dataToSend = createData(convertedInputs.radius,convertedInputs.height,_outputUnits,_inputUnits);
+
 
       let updateLocation = document.querySelector('#result');
       
@@ -84,10 +86,25 @@
         updateLocation.innerHTML = returnedValue;
       }
 
-      google.script.run.withFailureHandler(onFailure).withSuccessHandler(onSuccess).iGetDiskRecipeFromWebAPP(dataToSend);
+      google.script.run.withFailureHandler(onFailure).withSuccessHandler(onSuccess).mGetDiskRecipeFromWebAPP(dataToSend);
       console.log("out iDisk.html:sendData ***************************");
 
     };
+
+    function convertInputsToMetric(iradius,iheight){
+      console.log("in iDisk.html:convertInputsToMetric ***************************");
+      console.log("radius inches: "+iradius+" height inches: "+iheight);
+      // conversion factor to change inches to centimeters
+      const INCHTOCENT = 2.54;
+      var conObject = new Object();
+      conObject.radius = iradius*INCHTOCENT;
+      conObject.height = iheight*INCHTOCENT;
+      console.log("radius centimeters: "+conObject.radius+" height centimeters: "+conObject.height);
+      console.log("out iDisk.html:convertInputsToMetric ***************************");
+
+      return conObject;
+    }
+
 
     /**
      * this method takes the text input values and turns

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top"/>
+    <script src="https://unpkg.com/mathjs@10.6.0/lib/browser/math.js"></script>
+    <style>
+        body {
+            font: 15px Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+<h2>Slab Calculation</h2>
+<h4>Imperial version</h4>
+<p>Inputs can be decimal or fractions</p>
+<label for="length"> Length </label>
+<input type="text" id="length" name="length"  required/> inches<br><br>
+<label for="width"> Width </label>
+<input type="text" id="width" name="width" required/> inches<br><br>
+<label for="height"> Height </label>
+<input type="text" id="height" name="height" required/> inches<br><br>
+<p><b>Please select your preferred units of measure for recipe output :</b></p>
+<div>
+    <label for="outputUnits">Output units: </label>
+    <input type="radio" name="outputUnits" value="metric" checked>Metric
+    <input type="radio" name="outputUnits" value="imperial">Imperial
+</div>
+<br>
+<input id="submitBtn" type="submit" value="Submit" onclick="sendData()"/><br><br>
+
+<div id="result">
+    <em> Batch Recipe </em>
+</div>
+<br>
+<div>
+    <em>MG-Toolbox.ver 11.1</em>
+</div>
+
+<script>
+    /**
+     * Send number to Google Apps Script and returns a calculated
+     * value back to display on page.
+     */
+    function sendData() {
+        console.log("in iSlab.html:sendData ***************************");
+        var _inputUnits = "imperial"; 
+        //Get inputted number and result div
+        let _length = document.querySelector('#length').value;
+        let _width = document.querySelector('#width').value;
+        let _height = document.querySelector('#height').value;
+        let _outputUnits = document.querySelector('input[name=outputUnits]:checked').value;
+        console.log("length input: " + _length);
+        console.log("width input: " + _width);
+        console.log("height input: " + _height);
+        console.log("outputUnits input: " + _outputUnits);
+
+        // valid inputs can be whole numbers, decimals and fractions
+        var valid = validateInputs(_length, _width, _height);
+        if (!valid) { return; };
+
+        // inputs pass the validity test so turn them into numbers
+        // all inputs are in inches so volume will be in inches
+
+        var length = math.fraction(_length);
+        var width = math.fraction(_width);
+        var height = math.fraction(_height);
+
+        // We've turned the fraction or decimal text input into numbers.
+        // the numbers are still in the imperial units number system.
+        // Convert them to metric and use the metric path.
+        var convertedInputs = convertInputsToMetric(Number(length),Number(width), Number(height));
+        var dataToSend = createData(convertedInputs.length, convertedInputs.width, convertedInputs.height,_outputUnits,_inputUnits);
+
+        let updateLocation = document.querySelector('#result');
+
+        // serverside responses
+        function onFailure(returnedValue) {
+            console.log(returnedValue);
+            updateLocation.innerHTML = returnedValue;
+        }
+
+        function onSuccess(returnedValue) {
+            console.log(returnedValue);
+            updateLocation.innerHTML = returnedValue;
+        }
+
+        // console.log("Cuboid sendData: " + JSON.stringify(dataToSend));
+
+        google.script.run.withSuccessHandler(onSuccess).mGetSlabRecipeFromWebAPP(dataToSend);
+
+    };
+
+    function convertInputsToMetric(ilength,iwidth,iheight){
+        console.log("in iSlab.html:convertInputsToMetric ***************************");
+        console.log("length inches: "+ilength+" width inches: "+iwidth+" height inches: "+iheight);
+        // conversion factor to change inches to centimeters
+        const INCHTOCENT = 2.54;
+        var conObject = new Object();
+        conObject.length = ilength*INCHTOCENT;
+        conObject.width = iwidth*INCHTOCENT;
+        conObject.height = iheight*INCHTOCENT;
+
+        console.log("length centimeters: "+conObject.length+" width centimeters: "+conObject.width+" height centimeters: "+conObject.height);
+        console.log("out iSlab.html:convertInputsToMetric ***************************");
+
+        return conObject;
+    };
+
+
+    /**
+     * this method takes the text input values and turns
+     * them into json
+     */
+    function createData(_length, _width, _height,_outputUnits,_inputUnits) {
+        console.log("in iSlab:createData **************************");
+        var data = new Object();
+        data.length = _length;
+        data.width = _width;
+        data.height = _height;
+        data.outputUnits = _outputUnits;
+        data.inputUnits = _inputUnits;
+        var string = JSON.stringify(data);
+        console.log("data : "+string);
+        console.log("out iSlab:createData **************************");
+        return string;
+    };
+
+    function validateInputs(_length, _width, _height) {
+        var valid = true;
+        // turn text input into numbers or kick it back
+        var re = /[-]?[0-9]+[,.]?[0-9]*([\/][0-9]+[,.]?[0-9]*)*/;
+        var lenR = re.test(_length);
+        var widR = re.test(_width);
+        var hitR = re.test(_height);
+        var length;
+        var width;
+        var height
+
+        if (!lenR) {
+            return false;
+            console.log("length is not correctly formed");
+        }
+
+        if (!widR) {
+            return false;
+            console.log("length is not correctly formed");
+        }
+
+        if (!hitR) {
+            return false;
+            console.log("height is not correctly formed");
+        }
+
+        if (_length < 1 || _length > 300) {
+            console.log("bad value for length " + _length);
+            document.querySelector('#result').innerHTML = '<h4 style="color:red">ERROR length should be greater than the minimum value of 1cm</h4>'
+                + '<h4 style="color:red"> or less than the upper limit of 300cm</h4>';
+            valid = false;
+            return valid;
+        }
+        ;
+
+        if (_width < 1 || _width > 300) {
+            console.log("bad value for width " + _width);
+            document.querySelector('#result').innerHTML = '<h4 style="color:red">ERROR width should be greater than the minimum value of 1cm</h4>'
+                + '<h4 style="color:red"> or less than the upper limit of 300cm</h4>';
+            valid = false;
+            return valid;
+        }
+        ;
+
+        if (_height < .1 || _height > 300) {
+            console.log("bad value for height " + _height);
+            document.querySelector('#result').innerHTML = '<h4 style="color:red">ERROR height should be greater than the minimum value of 0.1cm</h4>';
+            valid = false;
+            return valid;
+        };
+
+        return valid;
+    };
+
+
+</script>
+</body>
+
+</html>

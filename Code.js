@@ -15,20 +15,24 @@ function doGet(e) {
   // There must be a pageName parameter or we Error out.
 
   if (e.parameter.pageName == "mDisk") {
-    Logger.log("    in mDisk")
+    Logger.log("    calling mDisk")
     return HtmlService.createHtmlOutputFromFile('mDisk').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   }  
   else if (e.parameter.pageName == "mSlab") {
-        Logger.log("    in mSlab")
+        Logger.log("    calling mSlab")
    return HtmlService.createHtmlOutputFromFile('mSlab').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   } 
   else if (e.parameter.pageName == "mCustom") {
-        Logger.log("    in mCustom")
+        Logger.log("    calling mCustom")
    return HtmlService.createHtmlOutputFromFile('mCustom').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   } 
   else if (e.parameter.pageName == "iDisk") {
-        Logger.log("    in iDisk")
+        Logger.log("    calling iDisk")
    return HtmlService.createHtmlOutputFromFile('iDisk').setSandboxMode(HtmlService.SandboxMode.IFRAME);
+  } 
+  else if (e.parameter.pageName == "iSlab") {
+        Logger.log("    calling iSlab")
+   return HtmlService.createHtmlOutputFromFile('iSlab').setSandboxMode(HtmlService.SandboxMode.IFRAME);
   } 
   else {
     // No page defined so throw and error page

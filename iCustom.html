@@ -12,7 +12,8 @@
 
 <body>
   <h2>Custom Calculation</h2>
-  <h4>Metric version</h4>
+  <h4>Imperial version</h4>
+  <p>Inputs can be decimal or fractions</p>
   <label for="volume"> Volume </label>
   <input type="number" id="volume" name="volume" min="15" max="1000" step="0.1" required/>  cubic centimeters<br><br>
   <p><b>Please select your preferred units of measure for recipe output :</b></p>
@@ -39,6 +40,7 @@
      * value back to display on page.
      */
     function sendData() {
+      console.log("in iCustom.html:sendData ***************************");
       var _inputUnits = "metric";
       //Get inputted number and result div
       let _volume = document.querySelector('#volume').value;
@@ -59,6 +61,7 @@
       }
 
       google.script.run.withSuccessHandler(onSuccess).mGetCustomRecipeFromWebAPP(dataToSend);
+      console.log("out iCustom.html:sendData ***************************");
 
     };
 
@@ -67,16 +70,20 @@
      * them into json
      */
     function createData(_volume,_outputUnits,_inputUnits){
-      console.log("in createData");
+      console.log("in iCustom.html:createData ***************************");
+
       var data = new Object();
       data.volume = _volume;
       data.outputUnits  = _outputUnits;
       data.inputUnits  = _inputUnits;
       var string = JSON.stringify(data);
+      console.log("out iCustom.html:createData ***************************");
       return string;
     };
 
     function validateInputs(_volume){
+      console.log("in iCustom.html:validateInputs ***************************");
+
       var valid = true;
         if(_volume < 10 || _volume > 1000 ){
         console.log("bad value for volume "+_volume);
@@ -84,14 +91,10 @@
                                                        +"<h4 style='color:red'> or less than the upper limit of 1000 cubic centimeters</h4>";
         valid = false;
       }
+      console.log("out iCustom.html:validateInputs ***************************");
 
       return valid;
     };
-
-
   </script>
-
-
 </body>
-
 </html>

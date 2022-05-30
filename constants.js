@@ -16,8 +16,8 @@ const TBSP  = "tbsp";
 const TSP   = "tsp";
 const IMPERIAL = "imperial";
 const METRIC = "metric";
-
-
+const CITOCC = 16.387;
+const INTOCM = 2.54;
 
 /**
  * 113g frit powder             (½ cup plus 2 level teaspoons ) 26.3 tsps in 113g   0.232 grams per tsp.
