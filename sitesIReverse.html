@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <script src="https://unpkg.com/mathjs@10.6.0/lib/browser/math.js"></script>
+  <style>
+    body {
+      font: 15px Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+<h2>Reverse Calculation</h2>
+<h4>Imperial version</h4>
+<label for="weight"> Weight </label>
+<input type="number" id="weight" name="weight" required/>  ounces<br><br>
+<p><b>Please select your preferred units of measure for dimensions :</b></p>
+<div>
+  <label for="outputUnits">Output units: </label>
+  <input type="radio" name="outputUnits" value="metric" checked>Metric
+  <input type="radio" name="outputUnits" value="imperial">Imperial
+</div>
+<br>
+<input id="submitBtn" type="submit" value="Submit" onclick="sendData()"/><br><br>
+<br>
+<div id="result">
+  <em> Dimemsions: </em>
+</div>
+<script>
+  const PI = 3.1416;
+  const CITOCC = 16.387;
+  const INTOCM = 2.54;
+  const OZTOGM = 28.35;
+
+  /**
+   * this is a local implementation, no need for a round trip to
+   * google apps script server.
+   */
+  function sendData() {
+    var _inputUnits = "imperial"
+    //Get inputted number and result div
+    let _weight = document.querySelector('#weight').value;
+    let _outputUnits  = document.querySelector('input[name=outputUnits]:checked').value;
+    console.log("weight input: "+_weight+" in "+_inputUnits+" cubic units");
+
+    // wt comes in as ounces
+    // convert to grams to continue
+    _weight = _weight*OZTOGM;
+    var valid = validateInputs(_weight);
+    if(!valid){  return; };
+
+    let updateLocation = document.querySelector('#result');
+
+    var volume = _weight/2;
+    volume = volume.toFixed(1);
+    var radius = Math.sqrt(volume/(PI*1));
+    radius = radius.toFixed(1);
+    var dimension = Math.sqrt(volume).toFixed(1);
+
+    if(_outputUnits == "metric"){
+      updateLocation.innerHTML = "<em> Volume: "+volume+"cm<sup>3</sup></em><br><em> Disk dimensions: </em> radius: "+radius+ "cm, height: 1cm <br> " +
+              "<em> Slab dimensions: </em> length: "+dimension+"cm, width: "+dimension+"cm, height: 1cm ";
+    }else if (_outputUnits == "imperial") {
+      // convert the metric units to imperial units
+      updateLocation.innerHTML = convert(volume,radius,dimension);
+    }else {
+      Logger.log("We should never get here 'Big old Error'");
+      resultHtml = "Failed to create recipe...  ERROR";
+    }
+    console.log("in the new reverse calculator..")
+  };
+
+  function convert(_volume,_radius,_dimension){
+    var wellChosen = (1/INTOCM).toFixed(3);
+    var volume = (_volume/CITOCC).toFixed(3);
+    var radius = (_radius/INTOCM).toFixed(3);
+    var dimension = (_dimension/INTOCM).toFixed(1);
+    return "<em> Volume: "+volume+"in<sup>3</sup></em><br><em> Disk dimensions: </em> radius: "+radius+ "in, height: "+wellChosen+"in <br> " +
+            "<em> Slab dimensions: </em> length: "+dimension+"in, width: "+dimension+"in, height: "+wellChosen+"in ";
+
+  }
+
+  function validateInputs(_weight){
+    var valid = true;
+    if(_weight < 10 || _weight > 500 ){
+      console.log("bad value for weight "+_weight);
+      document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR weight should be greater than the minimum value of 10 grams</h4>"
+              +"<h4 style='color:red'> or less than the upper limit of 500 grams</h4>";
+      valid = false;
+    }
+    return valid;
+  };
+</script>
+</body>
+</html>
