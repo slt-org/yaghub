@@ -2,17 +2,13 @@
 <html>
 
 <head>
-    <base target="_top"/>
+    <base target="_top">
+    <style>body {font: 15px Arial, sans-serif;}</style>
     <script src="https://unpkg.com/mathjs@10.6.0/lib/browser/math.js"></script>
-    <style>
-        body {
-            font: 15px Arial, sans-serif;
-        }
-    </style>
 </head>
 
 <body>
-<h2>Slab Calculation</h2>
+<h2>Disk Calculation</h2>
 <h4>Imperial version</h4>
 <p>Inputs can be decimal or fractions</p>
 <label for="length"> Length </label>
@@ -31,7 +27,7 @@
 <input id="submitBtn" type="submit" value="Submit" onclick="sendData()"/><br><br>
 
 <div id="result">
-    <em> Batch Recipe </em>
+    <em> Volume of disk: </em>
 </div>
 <br>
 <div>
@@ -39,30 +35,31 @@
 </div>
 
 <script>
+    const PI = 3.1416;
+    const CITOCC = 16.387;
+    const INTOCM = 2.54;
     /**
-     * Send number to Google Apps Script and returns a calculated
+     * Send disk inputs to Google Apps Script and returns a calculated
      * value back to display on page.
      */
     function sendData() {
-        console.log("in iSlab.html:sendData ***************************");
-        var _inputUnits = "imperial"; 
+        var _inputUnits = "imperial";
         //Get inputted number and result div
         let _length = document.querySelector('#length').value;
-        let _width = document.querySelector('#width').value;
+        let _width  = document.querySelector('#width').value;
         let _height = document.querySelector('#height').value;
-        let _outputUnits = document.querySelector('input[name=outputUnits]:checked').value;
+        let _outputUnits   = document.querySelector('input[name=outputUnits]:checked').value;
         console.log("length input: " + _length);
         console.log("width input: " + _width);
         console.log("height input: " + _height);
         console.log("outputUnits input: " + _outputUnits);
 
-        // valid inputs can be whole numbers, decimals and fractions
-        var valid = validateInputs(_length, _width, _height);
-        if (!valid) { return; };
+        var valid = validateInputs(_length,_width,_height);
+        if(!valid){  return; };
 
         // inputs pass the validity test so turn them into numbers
         // all inputs are in inches so volume will be in inches
-
+        //
         var length = math.fraction(_length);
         var width = math.fraction(_width);
         var height = math.fraction(_height);
@@ -71,61 +68,53 @@
         // the numbers are still in the imperial units number system.
         // Convert them to metric and use the metric path.
         var convertedInputs = convertInputsToMetric(Number(length),Number(width), Number(height));
-        var dataToSend = createData(convertedInputs.length, convertedInputs.width, convertedInputs.height,_outputUnits,_inputUnits);
 
+        // calculate the volume using imperial units converted to metric
+        var volumeObject = calculateVolume(convertedInputs.length, convertedInputs.width, convertedInputs.height, _outputUnits);
+        console.log("volumeObject: " + JSON.stringify(volumeObject));
         let updateLocation = document.querySelector('#result');
 
-        // serverside responses
-        function onFailure(returnedValue) {
-            console.log(returnedValue);
-            updateLocation.innerHTML = returnedValue;
+        if (_outputUnits == "metric") {
+            updateLocation.innerHTML = "<div></div><em> Volume of disk: </em> " + volumeObject.volume.toFixed(3) + " cm<sup>3</sup></div>";
+        } else if (_outputUnits == "imperial") {
+            // convert the metric units to imperial units
+            updateLocation.innerHTML = convert(volumeObject);
+
+        } else {
+            Logger.log("We should never get here 'Big old Error'");
+            resultHtml = "Failed to create recipe...  ERROR";
         }
 
-        function onSuccess(returnedValue) {
-            console.log(returnedValue);
-            updateLocation.innerHTML = returnedValue;
-        }
-
-        // console.log("Cuboid sendData: " + JSON.stringify(dataToSend));
-
-        google.script.run.withSuccessHandler(onSuccess).mGetSlabRecipeFromWebAPP(dataToSend);
-
+        console.log("in the new disk volume calculator..")
     };
-
-    function convertInputsToMetric(ilength,iwidth,iheight){
-        console.log("in iSlab.html:convertInputsToMetric ***************************");
-        console.log("length inches: "+ilength+" width inches: "+iwidth+" height inches: "+iheight);
-        // conversion factor to change inches to centimeters
-        const INCHTOCENT = 2.54;
-        var conObject = new Object();
-        conObject.length = ilength*INCHTOCENT;
-        conObject.width = iwidth*INCHTOCENT;
-        conObject.height = iheight*INCHTOCENT;
-
-        console.log("length centimeters: "+conObject.length+" width centimeters: "+conObject.width+" height centimeters: "+conObject.height);
-        console.log("out iSlab.html:convertInputsToMetric ***************************");
-
-        return conObject;
-    };
-
 
     /**
-     * this method takes the text input values and turns
-     * them into json
+     * Converts a volume object with metric values
+     * into a volume object with imperial values
+     * @param {object} volumeObject - contains volume calculated
+     * @return {string} - html with results
      */
-    function createData(_length, _width, _height,_outputUnits,_inputUnits) {
-        console.log("in iSlab:createData **************************");
-        var data = new Object();
-        data.length = _length;
-        data.width = _width;
-        data.height = _height;
-        data.outputUnits = _outputUnits;
-        data.inputUnits = _inputUnits;
-        var string = JSON.stringify(data);
-        console.log("data : "+string);
-        console.log("out iSlab:createData **************************");
-        return string;
-    };
+    function convert(volumeObject) {
+        volumeObject.wellChosen = (1 / INTOCM).toFixed(3);
+        volumeObject.volume = (volumeObject.volume / CITOCC).toFixed(3);
+        volumeObject.radius = (volumeObject.radius / INTOCM).toFixed(3);
+        volumeObject.dimension = (volumeObject.dimension / INTOCM).toFixed(1);
+        return "<div><em> Volume of disk: </em> " + volumeObject.volume + " in<sup>3</sup></em></div> ";
+    }
+
+    function convertInputsToMetric(_length,_width,_height) {
+        console.log("in sitesDiskVolumeImperial.html:convertInputsToMetric ***************************");
+        var length = (_length * INTOCM).toFixed(3);
+        var width = (_width * INTOCM).toFixed(3);
+        var height = (_height * INTOCM).toFixed(1);
+        var convertedObject = new Object();
+        convertedObject.length = length;
+        convertedObject.width = width;
+        convertedObject.height = height;
+        console.log("converted to metric: "+ JSON.stringify(convertedObject));
+        console.log("out sitesDiskVolumeImperial.html:convertInputsToMetric ***************************");
+        return convertedObject;
+    }
 
     function validateInputs(_length, _width, _height) {
         var valid = true;
@@ -180,8 +169,22 @@
         return valid;
     };
 
+    function calculateVolume(_length,_width,_height,_outputUnits){
+        console.log("inputs : ")
+        console.log("length input: "+_length);
+        console.log("width input: "+_width);
+        console.log("height input: "+_height);
+        console.log("units input: "+_outputUnits);
+        var volumeObject = new Object();
+        volumeObject.volume = _length*_width*_height;
+        volumeObject.ouputUnits = _outputUnits;
+        volumeObject.length = _length;
+        volumeObject.width = _width;
+        volumeObject.height = _height;
+
+        return volumeObject;
+    };
 
 </script>
 </body>
-
 </html>
