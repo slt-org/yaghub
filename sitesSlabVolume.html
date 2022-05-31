@@ -28,6 +28,8 @@
   </div>
 
   <script>
+    const CITOCC = 16.387;
+    const INTOCM = 2.54;
     /**
          * Send number to Google Apps Script and returns a calculated 
          * value back to display on page. 
@@ -52,30 +54,42 @@
           console.log(returnedValue);
           updateLocation.innerHTML = returnedValue;
         }
+      if (_outputUnits == "metric") {
+        updateLocation.innerHTML = "<div><em> Volume of Slab: </em> " + volumeObject.volume.toFixed(3) + " cm<sup>3</sup></div>";
+      } else if (_outputUnits == "imperial") {
+        // convert the metric units to imperial units
+        updateLocation.innerHTML = convert(volumeObject);
+      } else {
+        Logger.log("We should never get here 'Big old Error'");
+        resultHtml = "Failed to create recipe...  ERROR";
+      }
+    };
 
-        //console.log("Cuboid sendData: "+JSON.stringify(dataToSend));
+    function convert(volumeObject){
+      volumeObject.wellChosen = (1 / INTOCM).toFixed(3);
+      volumeObject.volume = (volumeObject.volume / CITOCC).toFixed(3);
+      volumeObject.length = (volumeObject.length / INTOCM).toFixed(3);
+      volumeObject.width = (volumeObject.width / INTOCM).toFixed(3);
+      return "<div><em> Volume of Slab: </em> " + volumeObject.volume + " in<sup>3</sup></em></div> ";
+    }
 
-        // google.script.run.withSuccessHandler(onSuccess).mGetCuboidRecipeFromWebAPP(dataToSend);
-        updateLocation.innerHTML = "<em> Volume of disk: </em> "+volumeObject.volume + " cm<sup>3</sup>";
+    function calculateVolume(_length,_width,_height,_outputUnits){
+      console.log("inputs : ")
+      console.log("length input: "+_length);
+      console.log("width input: "+_width);
+      console.log("height input: "+_height);
+      console.log("units input: "+_outputUnits);
+      var volumeObject = new Object();
+      volumeObject.volume = _length*_width*_height;
+      volumeObject.ouputUnits = _outputUnits;
+      volumeObject.length = _length;
+      volumeObject.width = _width;
+      volumeObject.height = _height;
 
-      };
+      return volumeObject;
+    };
 
-      /**
-       * this method takes the text input values and turns 
-       * them into json
-       */    
-      function createData(_length,_width,_height,_units){
-        console.log("in createData");
-        var data = new Object();
-          data.length = _length;
-          data.width = _width;
-          data.height = _height;
-          data.units = _units;
-          var string = JSON.stringify(data);
-          return string;
-      };
-
-      function validateInputs(_length,_width,_height){
+    function validateInputs(_length,_width,_height){
       var valid = true;
         if(_length < 1 || _length > 300 ){
           console.log("bad value for length "+_length);
@@ -102,21 +116,6 @@
       
       return valid;
     };
-
-    function calculateVolume(_length,_width,_height,_outputUnits){
-      console.log("inputs : ")
-      console.log("length input: "+_length);
-      console.log("width input: "+_width);
-      console.log("height input: "+_height);
-      console.log("units input: "+_outputUnits);
-      var volumeObject = new Object();
-      volumeObject.volume = _length*_width*_height;
-      volumeObject.ouputUnits = _outputUnits;
-
-      return volumeObject;
-    };
-
   </script>
 </body>
-
 </html>

@@ -2,107 +2,114 @@
 <html>
 
 <head>
-  <base target="_top">
-  <style>
-    body {
-      font: 15px Arial, sans-serif;
-    }
-  </style>
+    <base target="_top">
+    <style>
+        body {
+            font: 15px Arial, sans-serif;
+        }
+    </style>
 </head>
 
 <body>
 <h2>Disk Calculation</h2>
-
+<h4>Metric version</h4>
 <label for="radius"> Radius </label>
-<input type="number" id="radius" name="radius"  min="0.1" max="100" step=".1" required/>  centimeters<br><br>
+<input type="number" id="radius" name="radius" min="0.1" max="100" step=".1" required/> centimeters<br><br>
 <label for="height"> Height </label>
-<input type="number" id="height" name="height"  min="0.1" max="100"  step=".1" required/>  centimeters<br><br>
-<p><b>Please select your preferred units of measure for recipe output :</b></p>
+<input type="number" id="height" name="height" min="0.1" max="100" step=".1" required/> centimeters<br><br>
+<p><b>Please select your preferred units of measure for dimensions :</b></p>
 <div>
-  <label for="outputUnits">Output units: </label>
-  <input type="radio" name="outputUnits" value="metric" checked>Metric
-  <input type="radio" name="outputUnits" value="imperial">Imperial
+    <label for="outputUnits">Output units: </label>
+    <input type="radio" name="outputUnits" value="metric" checked>Metric
+    <input type="radio" name="outputUnits" value="imperial">Imperial
 </div>
 <br>
 <input id="submitBtn" type="submit" value="Submit" onclick="sendData()"/><br><br>
 <br>
 <div id="result">
-  <em> Volume of disk: </em>
+    <em> Volume of disk: </em>
 </div>
 <script>
-  /**
-   * Send disk inputs to Google Apps Script and returns a calculated
-   * value back to display on page.
-   */
-  function sendData() {
-    //Get inputted number and result div
-    let _radius = document.querySelector('#radius').value;
-    let _height = document.querySelector('#height').value;
-    let _outputUnits  = document.querySelector('input[name=outputUnits]:checked').value;
-    console.log("radius input: "+_radius);
-    console.log("height input: "+_height);
-    console.log("units input: "+_outputUnits);
+    const PI = 3.1416;
+    const CITOCC = 16.387;
+    const INTOCM = 2.54;
 
-    var valid = validateInputs(_radius,_height);
-    if(!valid){  return; };
+    /**
+     * Send disk inputs to Google Apps Script and returns a calculated
+     * value back to display on page.
+     */
+    function sendData() {
+        var _inputUnits = "metric";
+        //Get inputted number and result div
+        let _radius = document.querySelector('#radius').value;
+        let _height = document.querySelector('#height').value;
+        let _outputUnits = document.querySelector('input[name=outputUnits]:checked').value;
+        console.log("radius input: " + _radius);
+        console.log("height input: " + _height);
+        console.log("units input: " + _outputUnits);
 
-    // var dataToSend = createData(_radius,_height,_outputUnits);
-    var volumeObject = calculateVolume(_radius,_height,_outputUnits);
-    console.log("volumeObject: "+JSON.stringify(volumeObject));
-    let updateLocation = document.querySelector('#result');
+        var valid = validateInputs(_radius, _height);
+        if (!valid) {
+            return;
+        }
+        ;
 
-    console.log("in the new disk volume calculator..")
-    // google.script.run.withFailureHandler(onFailure).withSuccessHandler(onSuccess).mGetDiskRecipeFromWebAPP(dataToSend);
-    updateLocation.innerHTML = "<em> Volume of disk: </em> "+volumeObject.volume + " cm<sup>3</sup>";
+        // var dataToSend = createData(_radius,_height,_outputUnits);
+        var volumeObject = calculateVolume(_radius, _height, _outputUnits);
+        console.log("volumeObject: " + JSON.stringify(volumeObject));
+        let updateLocation = document.querySelector('#result');
 
-  };
+        if (_outputUnits == "metric") {
+            updateLocation.innerHTML = "<div></div><em> Volume of disk: </em> " + volumeObject.volume.toFixed(3) + " cm<sup>3</sup></div>";
+        } else if (_outputUnits == "imperial") {
+            // convert the metric units to imperial units
+            updateLocation.innerHTML = convert(volumeObject);
+        } else {
+            Logger.log("We should never get here 'Big old Error'");
+            resultHtml = "Failed to create recipe...  ERROR";
+        }
 
-  /**
-   * this method takes the text input values and turns
-   * them into json
-   */
-  function createData(_radius,_height,_units){
-    console.log("in createData");
-    var data = new Object();
-    data.radius = _radius;
-    data.height = _height;
-    data.units  = _units;
-    var string = JSON.stringify(data);
-    return string;
-  };
+        console.log("in the new disk volume calculator..")
+    };
 
-  function validateInputs(_radius,_height){
-    var valid = true;
-    if(_radius < 1 || _radius > 100 ){
-      console.log("bad value for radius "+_radius);
-      document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR radius should be greater than the minimum value of 1cm</h4>"
-              +"<h4 style='color:red'> or less than the upper limit of 100cm</h4>";
-      valid = false;
+    function convert(volumeObject) {
+        volumeObject.wellChosen = (1 / INTOCM).toFixed(3);
+        volumeObject.volume = (volumeObject.volume / CITOCC).toFixed(3);
+        volumeObject.radius = (volumeObject.radius / INTOCM).toFixed(3);
+        volumeObject.dimension = (volumeObject.dimension / INTOCM).toFixed(1);
+        return "<div><em> Volume of disk: </em> " + volumeObject.volume + " in<sup>3</sup></em></div> ";
     }
 
-    if(_height < .1 || _height > 100){
-      console.log("bad value for height "+_height);
-      document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR height < minimum value of .1 cm or > 100 cm</h4>";
-      valid = false;
+    function validateInputs(_radius, _height) {
+        var valid = true;
+        if (_radius < 1 || _radius > 100) {
+            console.log("bad value for radius " + _radius);
+            document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR radius should be greater than the minimum value of 1cm</h4>"
+                + "<h4 style='color:red'> or less than the upper limit of 100cm</h4>";
+            valid = false;
+        }
+
+        if (_height < .1 || _height > 100) {
+            console.log("bad value for height " + _height);
+            document.querySelector('#result').innerHTML = "<h4 style='color:red'>ERROR height < minimum value of .1 cm or > 100 cm</h4>";
+            valid = false;
+        }
+        return valid;
+    };
+
+    function calculateVolume(_radius, _height, _outputUnits) {
+        console.log("inputs : ")
+        console.log("radius input: " + _radius);
+        console.log("height input: " + _height);
+        console.log("units input: " + _outputUnits);
+        var volumeObject = new Object();
+        volumeObject.volume = PI*_radius * _radius * _height;
+        volumeObject.radius = _radius;
+        volumeObject.height = _height;
+        volumeObject.ouputUnits = _outputUnits;
+
+        return volumeObject;
     }
-    return valid;
-  };
-
-  function calculateVolume(_radius,_height,_outputUnits){
-    console.log("inputs : ")
-    console.log("radius input: "+_radius);
-    console.log("height input: "+_height);
-    console.log("units input: "+_outputUnits);
-    var volumeObject = new Object();
-    volumeObject.volume = _radius*_radius*_height;
-    volumeObject.ouputUnits = _outputUnits;
-
-    return volumeObject;
-  }
-
 </script>
-
-
 </body>
-
 </html>
