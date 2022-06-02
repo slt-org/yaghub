@@ -3,13 +3,20 @@
 
 <head>
     <base target="_top">
-    <style>body {font: 15px Arial, sans-serif;}</style>
+    <style>
+        body {font: 15px Arial, sans-serif;}
+        .coach{background-color: #b6d7a8;height: 40px;width: 400px;text-align: center;padding: 5px 0;border: 1px solid black;}
+    </style>
     <script src="https://unpkg.com/mathjs@10.6.0/lib/browser/math.js"></script>
 </head>
 
 <body>
-<h2>Disk Calculation</h2>
+<h2>Slab Calculation</h2>
 <h4>Imperial version</h4>
+<div class=coach>
+    use a space between whole numbers and fractions<br>
+    1 1/4 and 11/4 give very different answers!
+</div><br>
 <p>Inputs can be decimal or fractions</p>
 <label for="length"> Length </label>
 <input type="text" id="length" name="length"  required/> inches<br><br>
@@ -31,7 +38,7 @@
 </div>
 <br>
 <div>
-    <em>MG-Toolbox.ver 11.1</em>
+    <em>ver. 1.0 build 12</em>
 </div>
 
 <script>

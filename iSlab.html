@@ -5,15 +5,19 @@
     <base target="_top"/>
     <script src="https://unpkg.com/mathjs@10.6.0/lib/browser/math.js"></script>
     <style>
-        body {
-            font: 15px Arial, sans-serif;
-        }
+        body {font: 15px Arial, sans-serif;}
+        .coach{background-color: #b6d7a8;height: 40px;width: 400px;text-align: center;padding: 5px 0;border: 1px solid black;}
+    </style>
     </style>
 </head>
 
 <body>
 <h2>Slab Calculation</h2>
 <h4>Imperial version</h4>
+<div class=coach>
+    use a space between whole numbers and fractions<br>
+    1 1/4 and 11/4 give very different answers!
+</div><br>
 <p>Inputs can be decimal or fractions</p>
 <label for="length"> Length </label>
 <input type="text" id="length" name="length"  required/> inches<br><br>

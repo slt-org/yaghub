@@ -75,10 +75,10 @@ function formatIngredientList(formatObject) {
     cup = true;
   }
   if (cup == true) {
-    result = result + "cup + ";
+    result = result + " cup + ";
   }
   if (formatObject.tblsp > 0) {
-    result = result + formatObject.tblsp + "tblsp + ";
+    result = result + formatObject.tblsp + " tblsp + ";
   }
   if (formatObject.tsp > 0) {
     result = result + formatObject.tsp + " ";
@@ -97,7 +97,7 @@ function formatIngredientList(formatObject) {
     tsp = true;
   }
   if (tsp == true) {
-    result = result + "tsp.";
+    result = result + " tsp.";
   }
 
   console.log("out imperial.gs : formatIngredientList ***********************");
