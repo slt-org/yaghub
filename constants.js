@@ -18,7 +18,10 @@ const IMPERIAL = "imperial";
 const METRIC = "metric";
 const CITOCC = 16.387;
 const INTOCM = 2.54;
-
+const OZTOGM = 28.3495;
+const AUTHOR = "Steve Terry";
+const VERSION = "1.0";
+const REL = "11.1";
 
 
 

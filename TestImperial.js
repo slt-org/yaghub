@@ -1,3 +1,11 @@
+// test output for recipe modify header to match output units
+function testDisk_iCreateRecipeTableHtml(){
+  var obj = new Object();
+  obj = JSON.parse('{"volume":33.9,"radius":"6","height":".3","inputUnits":"metric","outputUnits":"imperial"}');
+  var testRun = iCreateRecipeTableHtml(obj);
+  console.log(" Test create html recipe table run :"+JSON.stringify(testRun));
+}
+
 
 //main web function called from client side with json values 
 function testDisk_iGetDiskRecipeFromWebAPP(){

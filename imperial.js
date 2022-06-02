@@ -23,9 +23,19 @@ function iCreateRecipeTableHtml(volumeObject) {     // a portion of this is dupl
   console.log("medium .................");
   var mediumAmount = formatIngredientList(convert(volumeObject.liquid_medium, LMEDIUMCONV));
 
+  var cubicInches = "in<sup>3</sup>";
+  var oz = "oz";
+  var impVolume;
+  var impWeight;
+  if(volumeObject.outputUnits == "imperial"){
+    // convert volume from cc to ci and weight from gm to oz.
+    impVolume=(volumeObject.volume/CITOCC).toFixed(2);
+    impWeight=(volumeObject.total_weight/OZTOGM).toFixed(2);
+  }
+
   Logger.log("glassAmount : " + glassAmount.toString());
-  volumeObject.units = "grams";
-  text = "<p><b>MG total volume:</b> " + volumeObject.volume.toFixed(1) + " cm<sup>3</sup>, <b>MG total weight:</b> " + volumeObject.total_weight.toFixed(1) + " " + volumeObject.units + "</p>"
+
+  text = "<p><b>MG total volume:</b> " + impVolume +" "+ cubicInches +", <b>MG total weight:</b> " + impWeight + " " + oz + "</p>"
     + "<h4> Batch Recipe</h4>"
     + "<table>"
     + "<tr><th>Ingredient</th> <th></th><th>Amount</th></tr>"
