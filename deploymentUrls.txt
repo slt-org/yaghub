@@ -1,10 +1,9 @@
 // version 12 deployment
 https://script.google.com/macros/s/AKfycbzK_jlr-UbqFPuArYhGBru2Xe-1RrXoK7-swG3-1ixMzxOy1IPrgVfuw03uTio2dOumdQ/exec
-
-
 https://script.google.com/macros/s/AKfycbzK_jlr-UbqFPuArYhGBru2Xe-1RrXoK7-swG3-1ixMzxOy1IPrgVfuw03uTio2dOumdQ/exec?pageName=
 
-  MG total volume: 15.90 in3, MG total weight: 18.39 oz
+// version 13 deployment
+https://script.google.com/macros/s/AKfycbxRrUspr112huhPKv1vbxf_NnHQsbnw4CextojdewAd1m4M2zs1pJWRx6YL8YHJ2F8xTg/exec?pageName=mDisk
 
 
 
